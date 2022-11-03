@@ -2,9 +2,6 @@ import React from 'react'
 
 //IMPORTING MUI LIBS:
 import {Box, Typography, TextField, Button} from '@mui/material/';
-import { hover } from '@testing-library/user-event/dist/hover';
-
-
 
 const LoginPage = () => {
   return (
@@ -28,9 +25,9 @@ const LoginPage = () => {
           variant='h3'
           padding= {3}
           textAlign = "center">LOGIN</Typography>
-          <TextField label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
-          <TextField type="password" label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button variant ="contained" color="error" size="large">Login</Button>  
+          <TextField type={'email'} label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
+          <TextField type={'password'} label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
+          <Button sx={{marginTop: 3}} variant ="contained" color="error" size="large" fullWidth>Login</Button>  
         </Box>
 
       </form>
