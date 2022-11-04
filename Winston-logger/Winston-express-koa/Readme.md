@@ -1,3 +1,6 @@
+# # Dependencies 
+- npm install winston
+
 ## Log messages for some level
 
 ```js
