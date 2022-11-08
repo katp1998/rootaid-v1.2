@@ -1,18 +1,26 @@
-import {User } from '../models/user.models';
+
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt'
+import aws from "aws-sdk"
 
+//using documentclient method 
+const db = new aws.DynamoDB.DocumentClient()
+
+//creating a constant with the table name
+// export const User = process.env.TABLE_NAME
 
 //@DESC: FIND IF USER EXISTS
 //@ROUTE: POST /api/v1.2/auth/
 export const findUser =async (email:any) => {
   //CHECK IF USER WITH SAME EMAIL ADDRESS EXISTS
-  try {
-    const existingUser = await User.findOne({ where: { email } })
-    return existingUser
+  const params ={
+    TableName: "rootaid-v1.2-test",
+    key: {
+      email
     }
-  catch (error) {
-    console.log(error)
+  }
+  if(params){
+    return params
   }
 }
   
@@ -29,14 +37,13 @@ export const findUser =async (email:any) => {
         const hashedPassword = await bcrypt.hash(password, salt)
         
         //CREATE USER:
-        const user = await User.create({
-          name,
-          email,
-          password: hashedPassword,
-        })
+        const params = {
+          TableName: "rootaid-v1.2-test",
+          Item: {name, email, password: hashedPassword}
+      }
         //RETURN SUCCESS RESPONSE
-        const response = {"status": "success", "user": {"name": user.name, "email": user.email}}
-        return response
+        await db.put(params).promise()
+        return { success: true }
 
       } catch (error) {
         console.log(error)
@@ -54,32 +61,14 @@ export const findUser =async (email:any) => {
   //@desc LOGIN
   //@route GET /api/v1.2/auth/login
   export const loginUser = async ({email, password} : any) => {
-    try {
-      //CHECK IF USER EXISTS
-      const userExists = findUser({email})
-
-      if (!userExists) {
-        const response = { "status": "error", "message": "User does not have an account, please Sign up" }
-        return response
-      }
-
-      const user = await User.findOne({ where: { email } })
-
-      //BCRYPT DECRYPTION METHODS:
-      const isPasswordValid = await bcrypt.compare(password, user!.password)
-  
-      if (isPasswordValid) {
-        //AUTHENTICATION METHODS REQUIRED:
-        const response = {"message": "Login successful"}
-        return response
-        
-
-      } else {
-        const response = {"message": "Incorrect password"}
-        return response
-      }
-    } catch (error) {
-      console.log(error)
+    //CHECK IF USER EXISTS
+    const userExists = findUser({email})
+    if(userExists){
+      
     }
+    try {
+      
+
+    }catch(error){}
   }
   
