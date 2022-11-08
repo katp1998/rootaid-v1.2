@@ -1,4 +1,4 @@
-import {User } from '../models/user.models';
+import { User } from '../models/user.models';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt'
 
@@ -18,7 +18,7 @@ export const findUser =async (email:any) => {
   
   //@desc CREATING USER
   //@route POST /api/v1.2/auth/create
-  export const createUser = async ({name, email, password}: any) => {
+  export const createUser = async ({name, email, password}: any) => { //types to be tested in integration between service and controller files
     //CHECK IF USER EXISTS
     const userExists = findUser({email})
     
