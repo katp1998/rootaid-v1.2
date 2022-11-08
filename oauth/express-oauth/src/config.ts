@@ -14,5 +14,5 @@ export default {
     privateKey: process.env.PRIVATE_KEY,
     googleClientId:process.env.GOOGLE_CLIENT_ID,
     googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    googleOauthRedirectUrl: process.env.GOOGLE_OAUTH_REDIRECT_URL,
+    googleOauthRedirectUri: process.env.GOOGLE_OAUTH_REDIRECT_URL,
   };

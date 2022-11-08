@@ -8,28 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.registerUser = void 0;
-const { signUp, logIn } = require('../../services/userService');
-const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const axios_1 = __importDefault(require("axios"));
+const fetcher = (url, headers = {}) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { name, email, password } = req.body;
-        const { data } = yield signUp({ name, email, password });
-        return res.json(data);
+        const { data } = yield axios_1.default.get(url, {
+            headers,
+            withCredentials: true,
+        });
+        return data;
     }
-    catch (error) {
-        next(error);
+    catch (e) {
+        return null;
     }
 });
-exports.registerUser = registerUser;
-const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { email, password } = req.body;
-        const { data } = yield logIn({ email, password });
-        return res.json(data);
-    }
-    catch (error) {
-        next(error);
-    }
-});
-exports.loginUser = loginUser;
+exports.default = fetcher;
