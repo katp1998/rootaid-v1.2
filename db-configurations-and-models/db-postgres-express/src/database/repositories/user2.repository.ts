@@ -1,7 +1,8 @@
+//without using typeorm
 import { Request, response, Response } from 'express';
-import { pool } from './connection';
+import { pool } from '../connection';
 import { QueryResult } from 'pg';
-import { getUserInfoQuery, createUserQuery, checkIfEmailExists } from './user.queries';
+import { getUserInfoQuery, createUserQuery, checkIfEmailExists } from '../queries/user.queries';
 import bcrypt from 'bcrypt'
 
 //@DESC: FIND IF USER EXISTS
@@ -24,7 +25,7 @@ export const findUser =async (email:any) => {
 
 //@desc: CREATE USER
 //@route: /api/v1.2/auth/create
-export const createUser = async ({ name, email, password }: any) => {
+export const createUser = async ({ name, email, password }: { name:string, email:string, password:string }) => {
     //CHECK IF USER EXISTS:
     const userExists = findUser({email})
 

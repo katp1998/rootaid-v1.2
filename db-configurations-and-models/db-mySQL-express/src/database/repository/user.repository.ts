@@ -29,7 +29,7 @@ export const findUser =async (email:any) => {
         const hashedPassword = await bcrypt.hash(password, salt)
         
         //CREATE USER:
-        const user = await User.create({
+        const user = await User.save({
           name,
           email,
           password: hashedPassword,
