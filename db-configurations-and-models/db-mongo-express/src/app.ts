@@ -1,8 +1,7 @@
 import { json, urlencoded } from 'body-parser';
 import express from 'express';
-import {connection} from './database/connection';
 import dotenv from 'dotenv';
-import { createConnection } from 'typeorm';
+import { createConnection, getMongoManager, getMongoRepository } from 'typeorm';
 import { User } from './database/models/user.models'
 import 'reflect-metadata'
 //import userRoutes from './api/routes/userRoutes'
@@ -20,19 +19,17 @@ app.use(urlencoded({extended:true}))
 
 //SYNCING DATABASE:
 createConnection({
-    type:'mysql',
-    database: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
+    type:'mongodb',
+    url: process.env.MONGO_URI,
+    useNewUrlParser:true,
+    useUnifiedTopology:true,
     logging: true,
     synchronize: true,
       entities: [User]
-  })
+  }).then(() => console.log("Database connected")).catch((error) => console.log(error, 'Database connection unsuccessful'))
 
 //ADDING USER ROUTES:
 //app.use("/api/users", userRoutes)
-
-
 
 
 //CONNECTION TO PORT:

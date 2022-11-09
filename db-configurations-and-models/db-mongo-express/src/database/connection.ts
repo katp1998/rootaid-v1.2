@@ -1,3 +1,5 @@
+//this is directly imported in app.js, hence this is not needed
+
 import {createConnection} from 'typeorm'
 import { User } from './models/user.models'
 

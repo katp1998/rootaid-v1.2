@@ -19,14 +19,14 @@ app.use((0, body_parser_1.json)());
 app.use((0, body_parser_1.urlencoded)({ extended: true }));
 //SYNCING DATABASE:
 (0, typeorm_1.createConnection)({
-    type: 'mysql',
-    database: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
+    type: 'mongodb',
+    url: process.env.MONGO_URI,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
     logging: true,
     synchronize: true,
     entities: [user_models_1.User]
-});
+}).then(() => console.log("Database connected")).catch((error) => console.log(error, 'Database connection unsuccessful'));
 //ADDING USER ROUTES:
 //app.use("/api/users", userRoutes)
 //CONNECTION TO PORT:

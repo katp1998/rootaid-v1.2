@@ -1,9 +1,10 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity} from 'typeorm'
+import {Entity, ObjectIdColumn, Column, BaseEntity} from 'typeorm'
+import {ObjectId} from 'mongodb'
 
 @Entity()
 export class User extends BaseEntity{
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @ObjectIdColumn()
+  _id!: ObjectId;
 
   @Column()
   name!: string;
@@ -13,4 +14,6 @@ export class User extends BaseEntity{
 
   @Column()
   password!: string;
+
+
 }
