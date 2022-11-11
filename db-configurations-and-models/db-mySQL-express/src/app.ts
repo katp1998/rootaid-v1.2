@@ -18,16 +18,8 @@ const app = express();
 app.use(json());
 app.use(urlencoded({extended:true}))
 
-//SYNCING DATABASE:
-createConnection({
-    type:'mysql',
-    database: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    logging: true,
-    synchronize: true,
-      entities: [User]
-  })
+//CONNECTING DATABASE:
+connection.then(() => console.log("Database connected")).catch((error) => console.log(error, 'Database connection unsuccessful'))
 
 //ADDING USER ROUTES:
 //app.use("/api/users", userRoutes)

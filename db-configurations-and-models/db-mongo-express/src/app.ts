@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 import { createConnection, getMongoManager, getMongoRepository } from 'typeorm';
 import { User } from './database/models/user.models'
 import 'reflect-metadata'
-//import userRoutes from './api/routes/userRoutes'
+import { connection } from './database/connection';
+//import userRoutes
 
 dotenv.config();
 
@@ -17,19 +18,10 @@ const app = express();
 app.use(json());
 app.use(urlencoded({extended:true}))
 
-//SYNCING DATABASE:
-createConnection({
-    type:'mongodb',
-    url: process.env.MONGO_URI,
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
-    logging: true,
-    synchronize: true,
-      entities: [User]
-  }).then(() => console.log("Database connected")).catch((error) => console.log(error, 'Database connection unsuccessful'))
+//CONNECTING TO DATABASE:
+connection.then(() => console.log("Database connected")).catch((error) => console.log(error, 'Database connection unsuccessful'))
 
 //ADDING USER ROUTES:
-//app.use("/api/users", userRoutes)
 
 
 //CONNECTION TO PORT:

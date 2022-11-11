@@ -1,15 +1,14 @@
-//this is directly imported in app.js, hence this is not needed
-
 import {createConnection} from 'typeorm'
 import { User } from './models/user.models'
 
 export const connection = createConnection({
-  type:'mysql',
-  database: process.env.DB_NAME,
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
+  type:'mongodb',
+  url: process.env.MONGO_URI,
+  useNewUrlParser:true,
+  useUnifiedTopology:true,
   logging: true,
   synchronize: true,
-    entities: [User]
+  entities: [User]
+  
 })
 

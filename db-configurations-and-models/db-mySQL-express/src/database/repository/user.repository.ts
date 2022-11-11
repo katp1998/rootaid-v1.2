@@ -18,68 +18,47 @@ export const findUser =async (email:any) => {
   
   //@desc CREATING USER
   //@route POST /api/v1.2/auth/create
-  export const createUser = async ({name, email, password}: {name: string, email: string, password: string}) => { //types to be tested in integration between service and controller files
-    //CHECK IF USER EXISTS
-    const userExists = findUser({email})
-    
-    if(!userExists){
+  export const createUser = async ({name, email, password}: {name: string, email: string, password: string}) => { //types to be tested in integration between service and controller files  
       try {
-        //GENERATE THE HASHED PASSWORD TO BE STORED IN THE DATABASE:
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password, salt)
-        
         //CREATE USER:
         const user = await User.save({
           name,
           email,
-          password: hashedPassword,
+          password,
         })
         //RETURN SUCCESS RESPONSE
-        const response = {"status": "success", "user": {"name": user.name, "email": user.email}}
-        return response
+        return user
 
       } catch (error) {
         console.log(error)
         //RETURN UNSUCCESSFUL RESPONSE
-        const response = {"status": "error", "messsage": "User creation unsuccessful"}
-        return response
+        return error
       }
-    }else{
-      const response = {"message": "User exists, please login"}
-      return response
-    }
+
 
 }
   
   //@desc LOGIN
   //@route GET /api/v1.2/auth/login
-  export const loginUser = async ({email, password} : any) => {
-    try {
-      //CHECK IF USER EXISTS
-      const userExists = findUser({email})
+  // export const loginUser = async ({email, password} : any) => {
+  //   try {
+  //     const user = await User.findOne({ where: { email } })
 
-      if (!userExists) {
-        const response = { "status": "error", "message": "User does not have an account, please Sign up" }
-        return response
-      }
-
-      const user = await User.findOne({ where: { email } })
-
-      //BCRYPT DECRYPTION METHODS:
-      const isPasswordValid = await bcrypt.compare(password, user!.password)
+  //     //BCRYPT DECRYPTION METHODS:
+  //     const isPasswordValid = await bcrypt.compare(password, user!.password)
   
-      if (isPasswordValid) {
-        //AUTHENTICATION METHODS REQUIRED:
-        const response = {"message": "Login successful"}
-        return response
+  //     if (isPasswordValid) {
+  //       //AUTHENTICATION METHODS REQUIRED:
+  //       const response = {"message": "Login successful"}
+  //       return response
         
 
-      } else {
-        const response = {"message": "Incorrect password"}
-        return response
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //     } else {
+  //       const response = {"message": "Incorrect password"}
+  //       return response
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
   
