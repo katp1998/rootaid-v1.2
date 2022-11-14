@@ -1,9 +1,8 @@
 import { User } from '../models/user.models';
-import { Request, Response } from 'express';
 
 //@DESC: FIND IF USER EXISTS
 //@ROUTE: POST /api/v1.2/auth/
-export const findUser =async (email:any) => {
+export const findUser =async (email:string) => {
   //CHECK IF USER WITH SAME EMAIL ADDRESS EXISTS
   try {
     const existingUser = await User.findOne({ where: { email } })
@@ -37,27 +36,4 @@ export const findUser =async (email:any) => {
 
 }
   
-  //@desc LOGIN
-  //@route GET /api/v1.2/auth/login
-  // export const loginUser = async ({email, password} : any) => {
-  //   try {
-
-  //     const user = await User.findOne({ where: { email } })
-
-  //     //BCRYPT DECRYPTION METHODS:
-  //     const isPasswordValid = await User.compare(password, user!.password)
-  
-  //     if (isPasswordValid) {
-  //       //AUTHENTICATION METHODS REQUIRED:
-  //       return user
-        
-
-  //     } else {
-  //       const response = {"message": "Incorrect password"}
-  //       return response
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  
+ 
