@@ -1,11 +1,20 @@
-import React from 'react'
 
-const HomePage = () => {
+import useStore from '../store/store';
+
+import {Box, Typography, TextField, Button,AppBar,Toolbar} from '@mui/material/';
+
+export default function HomePage() {
+
+  const user = useStore((state:any) => state.user.name)
+
   return (
     <div>
-      WELCOME TO HOMEPAGE!
+      <Typography
+      variant='h3'>
+        Welcome {user}
+      </Typography>
     </div>
+
+
   )
 }
-
-export default HomePage
