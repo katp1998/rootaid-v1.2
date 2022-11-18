@@ -4,17 +4,19 @@ import { Link } from 'react-router-dom'
 
 import authService from '../api/authService'
 
-
+import useStore from '../store/store';
 
 export default function NavBar() {
 
-  const [currentUser,setUser] = useState(undefined)
+  //const [currentUser,setUser] = useState(undefined)
+  const user = useStore((state:any) => state.user)
+  const setUser = useStore((state:any) => state.setUser)
 
   useEffect(() =>  {
-    const user = authService.getCurrentUser();
+    const existingUser = authService.getCurrentUser();
 
-    if (user) {
-      setUser(user);
+    if (existingUser) {
+      setUser(existingUser);
     }
   },[])
 
@@ -22,17 +24,17 @@ export default function NavBar() {
     authService.logout()
   }
   return (
-      <AppBar>
+      <AppBar  position='static'>
         <Toolbar>
           <Typography>
             <Link to={"/"}>Home</Link>
           </Typography>
-          {currentUser && (
+          {user.isLoggedIn && (
           <Typography>
               <Link to={"/private"} >Private</Link>
           </Typography>
           )}
-          {currentUser ? (
+          {user.isLoggedIn ? (
             <Typography>
               <a href="/login"  onClick={logOut}>Logout</a>
             </Typography>

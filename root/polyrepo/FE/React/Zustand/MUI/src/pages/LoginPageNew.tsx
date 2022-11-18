@@ -14,7 +14,6 @@ export default function LoginPage() {
   const error = useStore((state:any) => state.user.error)
   
   const [fields,setFields] = useState({
-    name: '',
     email:'',
     password: ''
   }) 
@@ -37,30 +36,32 @@ export default function LoginPage() {
 
   },[])
 
-  const handleRegister = async (e :any) => {
+  //const handleSubmit()
+
+
+  const handleLogin = async (e :any) => {
     e.preventDefault();
     try {
-      const response  = await authService.register(fields.name,fields.email,fields.password)
+      const response  = await authService.login(fields.email,fields.password)
+      console.log(response)
       if(response.data.error){
         setError(response.data.error)
+        //console.log(error)
       }else{
-        setUser({email:fields.email,name:response.data.name,isLoggedIn:true})
+        setUser({email:fields.email,name:response.data.name, isLoggedIn:true})
         setError('')
         navigate("/");
         window.location.reload();
       }
-
     } catch (error) {
         setError('Internal Server Error')
-    }
-      
+    }      
   };
-
 
   return (
     <>
     <div>
-      <form onSubmit={handleRegister}>
+      <form onSubmit={handleLogin}>
         <Box 
         display = "flex" 
         flexDirection={"column"} 
@@ -78,13 +79,13 @@ export default function LoginPage() {
           <Typography 
           variant='h3'
           padding= {3}
-          textAlign = "center">REGISTER</Typography>
-          <TextField type='text' name="name" value={fields.name}  onChange={onChange} required label="Name" variant="outlined" multiline placeholder='Enter your name' margin='normal' fullWidth color='error' />
+          textAlign = "center">LOGIN</Typography>
           <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
           <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button>  
+          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Login</Button>  
           <h1>{error}</h1>
         </Box>
+
         </form>
     </div>
     </>

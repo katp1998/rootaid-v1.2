@@ -1,7 +1,7 @@
 import create from "zustand";
 import {persist,devtools} from 'zustand/middleware'
 
-interface IStore {
+interface IAuth {
     user: {
       name: string
       email: string
@@ -9,15 +9,16 @@ interface IStore {
       isLoading:boolean
       error:string
     }
-    setUser: (user: IStore['user']) => void
+    
+    setUser: (user: IAuth['user']) => void
     setLoading: (isLoading: boolean) => void
     setError: (error: string) => void
   }
   
-  const useStore = create<IStore>()(devtools(persist((set) => ({
+  const useStore = create<IAuth>()(devtools(persist((set) => ({
     user: {
-      name: 'empty',
-      email: 'empty',
+      name: '',
+      email: '',
       isLoggedIn: false,
       isLoading: false,
       error: '',

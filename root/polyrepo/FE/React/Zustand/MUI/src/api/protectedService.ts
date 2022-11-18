@@ -4,8 +4,10 @@ import authHeader from "./authHeader";
 const API_URL = "/user";
 
 const getPrivateRoute = () => {
-  const response =  axios.get(API_URL + "/private", { headers: authHeader() });
-  return response
+  return axios.get(API_URL + '/private' ,  { headers: authHeader() })
+    .then((response) => {
+      return response
+    })
 };
 
 export default getPrivateRoute

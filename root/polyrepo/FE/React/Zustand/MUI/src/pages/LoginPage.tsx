@@ -40,11 +40,12 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const response  = await authService.login(fields.email,fields.password)
+      console.log(response)
       if(response.data.error){
         setError(response.data.error)
         //console.log(error)
       }else{
-        setUser({email:fields.email,name:response.data.name})
+        setUser({email:fields.email,name:response.data.name, isLoggedIn:true})
         setError('')
         navigate("/");
         window.location.reload();

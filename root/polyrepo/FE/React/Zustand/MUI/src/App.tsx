@@ -8,6 +8,7 @@ import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PrivateRoute from './pages/PrivateRoute';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path='/' element={<HomePage/>}></Route>
           <Route path='/login' element={<LoginPage/>}></Route>
           <Route path='/register' element={<RegisterPage/>}></Route>
+          <Route path='/private' element={<PrivateRoute/>}></Route>
         </Routes> 
         </main>
       </>
