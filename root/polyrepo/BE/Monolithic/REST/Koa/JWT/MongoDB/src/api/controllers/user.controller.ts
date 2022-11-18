@@ -1,8 +1,9 @@
+import { createUser } from '../../database/repositories/user.repository';
 import { registerUser, loginUser } from '../../services/auth/user.service';
 
 //REGISTER REQUEST INTERFACE
 interface RegisterRequest {
-  username: string;
+  name: string;
   email: string;
   password: string
 
@@ -10,7 +11,7 @@ interface RegisterRequest {
 
 //LOGIN REQUEST INTERFACE
 interface LoginRequest {
-  username: string;
+  name: string;
   password: string
 
 }
@@ -20,18 +21,18 @@ const handleRegister = async (ctx: any) => {
   
 
   try {
-    const { username, email, password } = <RegisterRequest>ctx.request.body;
+    const { name, email, password } = <RegisterRequest>ctx.request.body;
     
     //PASSING INTO METHOD IN USER.SERVICE
-    const data = await registerUser(username, password, email);
-    return data;
-
-    // ctx.body = `New user added: ${username},
-    // email: ${email},
-    // password: ${password}`;
+    await registerUser(name, email, password);
+    ctx.body = {
+      "name is": name,
+      "email": email,
+      "password": password
+  };
 
   } catch (error) {
-    return error;
+    ctx.body(error)
   }
 
 };
@@ -39,10 +40,10 @@ const handleRegister = async (ctx: any) => {
 //LOGIN USER
 const handleLogin = async (ctx: any) => {
   try {
-    const { username, password } = <LoginRequest>ctx.request.body;
+    const { name, password } = <LoginRequest>ctx.request.body;
 
     //PASSING INTO METHOD IN USER.SERVICE
-    const data = await loginUser(username, password);
+    const data = await loginUser(name, password);
     return data;
 
     //ctx.body = `Successful login: ${username}`;
