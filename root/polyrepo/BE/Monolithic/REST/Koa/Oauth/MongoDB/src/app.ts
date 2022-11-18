@@ -1,5 +1,5 @@
 import Koa from 'koa'
-import { DefaultState, DefaultContext, ParameterizedContext } from 'koa'
+import { DefaultState, DefaultContext } from 'koa'
 import Router from 'koa-router'
 import dotenv from 'dotenv'
 import { connection } from './database/connection';
