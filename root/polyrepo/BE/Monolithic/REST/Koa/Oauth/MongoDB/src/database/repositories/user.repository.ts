@@ -14,7 +14,7 @@ export const findUser = async(email: string) =>{
 
 //@desc CREATING USER
 //@route POST /api/v1.2/auth/create
-const createUser = async({name, email, password}: {name: string, email: string, password: string}) =>{
+export const createUser = async({name, email, password}: {name: string, email: string, password: string}) =>{
 try {
     //CREATE USER:
     const user = await User.save({

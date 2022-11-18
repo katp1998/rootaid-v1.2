@@ -44,7 +44,7 @@ export default function LoginPage() {
       if(response.data.error){
         setError(response.data.error)
       }else{
-        setUser({email:fields.email})
+        setUser({email:fields.email,name:response.data.name,isLoggedIn:true})
         setError('')
         navigate("/");
         window.location.reload();
@@ -82,7 +82,7 @@ export default function LoginPage() {
           <TextField type='text' name="name" value={fields.name}  onChange={onChange} required label="Name" variant="outlined" multiline placeholder='Enter your name' margin='normal' fullWidth color='error' />
           <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
           <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Login</Button>  
+          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button>  
           <h1>{error}</h1>
         </Box>
         </form>
