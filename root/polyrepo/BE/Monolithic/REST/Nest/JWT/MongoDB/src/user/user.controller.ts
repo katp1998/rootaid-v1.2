@@ -20,7 +20,8 @@ export class UserController {
 
      // Register user
      @Post("/register")
-     createUser(@Body() userCreateDTO: userCreatedto) {
+     createUser(@Body() userCreateDTO: userCreatedto)
+     {
          return this.userService.register(userCreateDTO);
      }
  

@@ -1,22 +1,25 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UserDocument } from 'databases/models/user.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import {
+    HttpException,
+    HttpStatus,
+    Injectable
+} from '@nestjs/common';
 import { userCreatedto } from './dto/user.create.dto';
 import { encodePassword } from 'src/utils/bcrypt';
 import { logindto } from './dto/login.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'databases/models/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
 
     constructor(
-        @InjectModel('User')
-        private readonly userModel: Model<UserDocument>,
+        @InjectRepository(User) 
+        private userRepositary: Repository<User>,
         private jwtService : JwtService
     ) { }
-
 
      // register User
 
@@ -26,8 +29,7 @@ export class UserService {
         if (!existingUser)
         {
             const password = await encodePassword(createUserDTO.password);
-            const newUser = new this.userModel({ ...createUserDTO, password });
-            const registeredUser = newUser.save();
+            const newUser = this.userRepositary.save({ ...createUserDTO, password });
 
             throw new HttpException({
                 status: HttpStatus.CREATED,
@@ -86,10 +88,8 @@ export class UserService {
 
      findUserByEmail(email: string)
      {
-         return this.userModel.findOne(
-             {
-             email
-             }
+         return this.userRepositary.findOne(
+            { where: { email } }
          );
      }  
 }

@@ -1,30 +1,27 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { User, UserSchema } from 'databases/models/user.schema';
-import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
+import { ConfigModule } from '@nestjs/config';
+import { User } from 'databases/models/user.entity';
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
+    ConfigModule.forRoot(
       {
-        name: User.name,
-        schema: UserSchema
-      }
-    ]),
-    PassportModule,
+        envFilePath: '.env',
+        isGlobal: true
+        }),
+    TypeOrmModule.forFeature([User]),
     JwtModule.register({
-      secret: process.env.jwt_secretKey || "secret1234",
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn:'1d'}
   })
   ],
   providers: [
     UserService,
-    LocalStrategy,
     JwtStrategy
   ],
 
