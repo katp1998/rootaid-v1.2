@@ -9,15 +9,18 @@ const registerUser = async (name: string, password: string, email: string) => {
     if (!checkExistingUser) { 
       let hashedPassword = await generatePassword(password);
 
-      const newUser : any = await createUser({ name, email, password:hashedPassword });
+      //creating user in database (user.repository):
+      const newUser = await createUser({ name, email, password:hashedPassword });
         
       const token = await generateToken({ email: newUser.email, _id: newUser._id });
 
-      return { id:newUser._id, token };
+      //
+      console.log(`created new user ${newUser.name} email address: ${newUser.email}, with token: ${token}` )
+     
 
     } else {
 
-      return { error : 'Email already registered, please login' };
+      console.log( 'Email already registered, please login')  ;
     }
   } catch (error) {
         

@@ -5,7 +5,7 @@ import { User } from '../models/user.model';
 //@ROUTE: POST /api/v1.2/auth/
 export const findUser = async (email: string) =>{
   try {
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await User.findOne({ email } as any);
     return existingUser;
   } catch (error) {
         
