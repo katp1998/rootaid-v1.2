@@ -5,6 +5,7 @@ import { stringify } from 'qs';
 import { User } from 'database/models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { logindto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -66,14 +67,13 @@ export class UserService {
                 status: HttpStatus.NOT_ACCEPTABLE,
                 message: 'Already email registered'
               }, HttpStatus.NOT_ACCEPTABLE)
-
-            
+  
         }
         catch (error)
         {
             throw new HttpException({
                 status: HttpStatus.NOT_ACCEPTABLE,
-                message: error
+                message: 'Already username exists'
               }, HttpStatus.NOT_ACCEPTABLE)
         }
 
@@ -84,9 +84,9 @@ export class UserService {
     // login user
    
 
-    async loginUser(userCreateDTO: userCreatedto) {
-        const { username, password } = userCreateDTO;
-        
+    async loginUser(loginDTO: logindto) {
+        const { username, password } = loginDTO;
+        let data :any;
         try{
             const response = await this.httpService.axiosRef(
             {
@@ -102,24 +102,26 @@ export class UserService {
                     })
             
                 });
+             data = response.data;
+            }
+            catch (error)
+            {
+                throw new HttpException({
+                    status: HttpStatus.UNAUTHORIZED,
+                    message: "Unauthorized",
+                    user:null,
+                    access_token:null
+                }, HttpStatus.UNAUTHORIZED);
+            }
             
-            const data = response.data;
+            const user = await this.findUserByUsername(username);
             
             throw new HttpException({
-                status: HttpStatus.ACCEPTED,
+                status: HttpStatus.OK,
                 message: 'Sucessfully Logged In',
+                user: user,
                 access_token: data.access_token,
-          }, HttpStatus.ACCEPTED);
-        
-        }
-        catch (error)
-        {
-            throw new HttpException({
-                status: HttpStatus.UNAUTHORIZED,
-                message: 'User unauthorized',
-                access_token:null
-            }, HttpStatus.UNAUTHORIZED);
-        }
+          }, HttpStatus.OK);
         
     }
 
@@ -156,4 +158,10 @@ export class UserService {
            { where: { email } }
         );
     } 
+
+    findUserByUsername(username: string) {
+        return this.userRepositary.findOne(
+            {where :{ username }}
+        );
+    }
 }
