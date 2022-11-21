@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
 import { createUser } from '../database/repository/user.repository';
+import { hashPassword } from 'src/utils/hashPassword';
 
 @Injectable()
 export class AuthService {
@@ -32,24 +33,22 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
   }
 
     try {
-    const email:string = userAttr[0].Value;
-    const data = await createUser({name: username, email , password});
-    console.log(`Database entry success: username: ${username},
+    const email: string = userAttr[0].Value;
+    const hashedPassword: string  = await hashPassword(password)
+    const dbResponse = await createUser({name: username, email , password: hashedPassword});
+    console.log(`Created database entry: 
+    username: ${username},
     email: ${email},
-    password: ${password}
-    Log: ${data}`)
-  } catch (error) {
-    console.log(`Error occurred with database entry: ${error}`)
-  }
+    message: ${dbResponse}`);
 
-  try {
-    const data = await this.cognitoService.signUp(params).promise();
-    console.log(data);
-    return `Registration successful: ${username}`;
+    const cognitoResponse = await this.cognitoService.signUp(params).promise();
+    console.log(`Created cognito user:
+    username: ${username},
+    email: ${email},
+    message: ${cognitoResponse.$response}`);
   } catch (error) {
-    console.log(error);
-    return 'Registration failed';
-  }
+    console.log(`Error occurred: ${error}`);
+  };
 
 }
 
