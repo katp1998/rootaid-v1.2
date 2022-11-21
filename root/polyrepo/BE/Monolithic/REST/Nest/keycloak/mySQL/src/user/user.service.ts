@@ -1,20 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { userCreatedto } from './dto/userCreate.dto';
-import { stringify } from 'qs';
 import { User } from 'database/models/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HttpService } from '@nestjs/axios';
+import { userCreatedto } from './dto/userCreate.dto';
 import { logindto } from './dto/login.dto';
+import { stringify } from 'qs';
 
 @Injectable()
 export class UserService {
+
     constructor(
         @InjectRepository(User) 
         private userRepositary: Repository<User>,
         private readonly httpService: HttpService
     ) { }
-    
 
      // Register user
     
@@ -73,7 +73,7 @@ export class UserService {
         {
             throw new HttpException({
                 status: HttpStatus.NOT_ACCEPTABLE,
-                message: 'Already username exists'
+                message: error
               }, HttpStatus.NOT_ACCEPTABLE)
         }
 
@@ -151,7 +151,7 @@ export class UserService {
         }
     }
 
-
+    // Get user by email
     findUserByEmail(email: string)
     {
         return this.userRepositary.findOne(
@@ -159,9 +159,12 @@ export class UserService {
         );
     } 
 
+    // Get user by username
     findUserByUsername(username: string) {
         return this.userRepositary.findOne(
             {where :{ username }}
         );
     }
+
+
 }

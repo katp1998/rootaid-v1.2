@@ -1,13 +1,17 @@
 import {
-    IsString
+    IsString,
+    IsEmail
 } from 'class-validator'
 
-export class logindto {
+export class userCreatedto {
 
     @IsString()
     username: string;
 
+    @IsEmail()
+    email: string;
+
     @IsString()
     password: string;
-    
+
 }
