@@ -6,11 +6,7 @@ import { User } from '../../types/user.type'
 const user = JSON.parse(localStorage.getItem('user') as string) 
 
 export interface UserState {
-    user:{
-        _id: string
-        name: string
-        email: string
-    }
+    user?: User
     isLoading: boolean
     isError:boolean
     message: string
