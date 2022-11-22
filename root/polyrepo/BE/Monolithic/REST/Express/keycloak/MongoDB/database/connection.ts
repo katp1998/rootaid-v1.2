@@ -1,5 +1,5 @@
-import {createConnection} from 'typeorm'
-import { User } from './models/user.models'
+import { createConnection } from 'typeorm';
+import { User } from './models/user.models';
 
 export const connection = createConnection({
   type:'mongodb',
@@ -8,7 +8,6 @@ export const connection = createConnection({
   useUnifiedTopology:true,
   logging: true,
   synchronize: true,
-  entities: [User]
-  
-})
+  entities: [User],
+});
 
