@@ -1,11 +1,25 @@
-import React from 'react'
+import {Box, Typography, TextField, Button,AppBar,Toolbar} from '@mui/material/';
+import {  useAppSelector } from '../store/hooks';
 
-const HomePage = () => {
+
+
+
+export default function HomePage() {
+
+  const {user} = useAppSelector((state) => state.auth)
+
   return (
     <div>
-      WELCOME TO HOMEPAGE!
+      { user && (
+        <Typography
+        variant='h3'>
+          Welcome {user.name}
+        </Typography>
+      )
+      }
+
     </div>
+
+
   )
 }
-
-export default HomePage

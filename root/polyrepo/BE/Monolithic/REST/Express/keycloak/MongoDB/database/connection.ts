@@ -10,4 +10,3 @@ export const connection = createConnection({
   synchronize: true,
   entities: [User],
 });
-
