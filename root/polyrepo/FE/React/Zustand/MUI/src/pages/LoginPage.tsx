@@ -1,6 +1,8 @@
 import {useState,useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
 import authService from '../api/authService';
+import { User } from "../types/user.type";
+
 
 import {Box, Typography, TextField, Button} from '@mui/material/';
 
@@ -39,7 +41,11 @@ export default function LoginPage() {
   const handleLogin = async (e :any) => {
     e.preventDefault();
     try {
-      const response  = await authService.login(fields.email,fields.password)
+      const user : User = {
+        email: fields.email as string,
+        password: fields.password as string
+      } 
+      const response  = await authService.login(user)
       console.log(response)
       if(response.data.error){
         setError(response.data.error)

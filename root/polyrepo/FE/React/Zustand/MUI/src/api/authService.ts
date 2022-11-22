@@ -1,13 +1,11 @@
 import axios from "axios";
+import { User } from "../types/user.type";
+
 
 const API_URL = "/user";
 
-const register = (name :any,email:any,password:any) => {
-  return axios.post(API_URL + "/register", {
-      name,  
-      email,
-      password,
-    })
+const register = (userData:User) => {
+  return axios.post(API_URL + "/register", userData)
     .then((response) => {
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -17,11 +15,8 @@ const register = (name :any,email:any,password:any) => {
     });
 };
 
-const login = (email:any, password:any) => {
-   return axios.post(API_URL + "/login", {
-      email,
-      password,
-    })
+const login = (userData: User) => {
+   return axios.post(API_URL + "/login",userData)
     .then((response) => {
       if (response.data.token) {
         localStorage.setItem("user", JSON.stringify(response.data));

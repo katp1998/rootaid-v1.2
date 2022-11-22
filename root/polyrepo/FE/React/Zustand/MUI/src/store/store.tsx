@@ -7,7 +7,7 @@ interface IAuth {
       email: string
       isLoggedIn: boolean
       isLoading:boolean
-      error:string
+      message:string
     }
     
     setUser: (user: IAuth['user']) => void
@@ -21,11 +21,11 @@ interface IAuth {
       email: '',
       isLoggedIn: false,
       isLoading: false,
-      error: '',
+      message: '',
     },
     setUser: (user) => set((state) => ({ user: { ...state.user, ...user } })),
     setLoading: (loading) => set((state) => ({ user: { ...state.user, isLoading: loading } })),
-    setError: (error) => set((state) => ({ user: { ...state.user, error: error } })),
+    setError: (error) => set((state) => ({ user: { ...state.user, message: error } })),
   })))) 
 
  
