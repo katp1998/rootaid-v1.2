@@ -3,12 +3,12 @@ import { User } from '../models/user.model';
 
 //@DESC: FIND IF USER EXISTS
 //@ROUTE: POST /api/v1.2/auth/
-export const findUser = async (email: string) =>{
+export const findUser = async (email: any) =>{
   try {
     const existingUser = await User.findOne({ email } as any);
     return existingUser;
   } catch (error) {
-        
+    console.log(error, 'from user.repository');
   }
 };
 

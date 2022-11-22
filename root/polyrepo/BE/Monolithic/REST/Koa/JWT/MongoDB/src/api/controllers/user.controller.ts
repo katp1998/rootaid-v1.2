@@ -1,4 +1,4 @@
-import { createUser } from '../../database/repositories/user.repository';
+import { createUser, findUser } from '../../database/repositories/user.repository';
 import { registerUser, loginUser } from '../../services/auth/user.service';
 
 //REGISTER REQUEST INTERFACE
@@ -16,23 +16,42 @@ interface LoginRequest {
 
 }
 
+//FINDING USER
+const handleUser = async (ctx:any) => {
+
+  const email = ctx.request.body;
+  const user = await findUser(email);
+  return user;
+
+  
+};
+
 //REGISTERING USER
 const handleRegister = async (ctx: any) => {
   
 
   try {
     const { name, email, password } = <RegisterRequest>ctx.request.body;
+  
+    //CHECK IF USER EXISTS:
+    const userExists = await handleUser(email);
+
+    if (!userExists) {
+      //PASSING INTO METHOD IN USER.SERVICE
+      await registerUser(name, email, password);
+      ctx.body = {
+        'name is': name,
+        'email': email,
+        'password': password,
+      };
+    } else {
+
+    }
     
-    //PASSING INTO METHOD IN USER.SERVICE
-    await registerUser(name, email, password);
-    ctx.body = {
-      "name is": name,
-      "email": email,
-      "password": password
-  };
+    
 
   } catch (error) {
-    ctx.body(error)
+    ctx.body(error);
   }
 
 };

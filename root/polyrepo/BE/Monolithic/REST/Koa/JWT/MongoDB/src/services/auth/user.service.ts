@@ -4,26 +4,19 @@ import { findUser, createUser } from '../../database/repositories/user.repositor
 
 const registerUser = async (name: string, password: string, email: string) => {
   try {
-    const checkExistingUser = await findUser({ email } as any); //--> can this be used as any???
+    let hashedPassword = await generatePassword(password);
 
-    if (!checkExistingUser) { 
-      let hashedPassword = await generatePassword(password);
-
-      //creating user in database (user.repository):
-      const newUser = await createUser({ name, email, password:hashedPassword });
+    //creating user in database (user.repository):
+    const newUser = await createUser({ name, email, password:hashedPassword });
         
-      const token = await generateToken({ email: newUser.email, _id: newUser._id });
+    const token = await generateToken({ email: newUser.email, _id: newUser._id });
 
-      //
-      console.log(`created new user ${newUser.name} email address: ${newUser.email}, with token: ${token}` )
+    //
+    return (`created new user ${newUser.name} email address: ${newUser.email}, with token: ${token}` );
      
-
-    } else {
-
-      console.log( 'Email already registered, please login')  ;
-    }
   } catch (error) {
-        
+    console.log(error);
+    return ('error in registering user, thrown from user.service.ts');
   }
 };
 
