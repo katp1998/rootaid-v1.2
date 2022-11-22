@@ -9,6 +9,4 @@ export const connection = createConnection({
   logging: true,
   synchronize: true,
   entities: [User],
-  
 });
-
