@@ -6,7 +6,7 @@ import { connection } from './database/connection';
 import userRoutes from './api/routes/user.routes';
 import json from 'koa-json';
 import bodyParser from 'koa-bodyparser';
- const mongoUri = process.env.MONGO_URI
+const mongoUri = process.env.MONGO_URI;
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
