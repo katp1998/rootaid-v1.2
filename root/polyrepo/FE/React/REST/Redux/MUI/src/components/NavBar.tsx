@@ -21,23 +21,20 @@ export default function NavBar() {
       <AppBar  position='static'>
         <Toolbar>
           <Typography>
-            <Link to={"/"}>Home</Link>
+            <Link to={"/"} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Home</Link>
           </Typography>
-          {user && (
-          <Typography>
-              <Link to={"/private"} >Private</Link>
-          </Typography>
-          )}
+          <Box alignItems="right" sx={{flexGrow:1, textAlign:"right"}}>
           {user ? (
             <Typography>
-              <a href="/login"  onClick={logOut}>Logout</a>
+              <a href="/login"  onClick={logOut} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Logout</a>
             </Typography>
           ):(
             <Typography>
-              <Link to={"/login"}>Login</Link>
-              <Link to={"/register"}>Register</Link>
+              <Link to={"/login"} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Login</Link>
+              <Link to={"/register"} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Register</Link>
             </Typography>
           )}
+          </Box>
         </Toolbar>
       </AppBar>
   )

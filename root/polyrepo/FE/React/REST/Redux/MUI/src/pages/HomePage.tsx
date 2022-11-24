@@ -9,17 +9,14 @@ export default function HomePage() {
   const {user} = useAppSelector((state) => state.auth)
 
   return (
+    <>
     <div>
-      { user && (
         <Typography
         variant='h3'>
-          Welcome {user.name}
+          Welcome {user?.name}
         </Typography>
-      )
-      }
-
     </div>
-
+    </>
 
   )
 }

@@ -1,11 +1,22 @@
 import React from 'react'
 
-const HomePage = () => {
+import { useAuth } from '../contexts/AuthContext'
+
+import { Typography } from '@mui/material'
+ 
+export default function HomePage() {
+
+  const {user} = useAuth()
+
+
   return (
+    <>
     <div>
-      WELCOME TO HOMEPAGE!
+      <Typography
+      variant='h3'>
+        Welcome {user?.name}
+      </Typography>
     </div>
+    </>
   )
 }
-
-export default HomePage
