@@ -9,11 +9,11 @@ import { hashPassword } from '../utils/hashPassword';
 export class AuthService {
 
 private config = {
-    region: 'us-east-1',
+    region: process.env.COGNITO_REGION,
 };
 
-private secretHash = '1ofv95uvqt9knp7vsg7g3ark5k192g46qt73iur43mat30604u0c';
-private clientId = '51qtvnblrch9vm6cbhgfaj37sl';
+private secretHash = process.env.COGNITO_SECRET;
+private clientId = process.env.COGNITO_CLIENT_ID;
 
 private cognitoService = new AWS.CognitoIdentityServiceProvider(this.config);
 
