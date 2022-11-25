@@ -10,19 +10,22 @@ export class userService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async findUser(email: any) {
-    //Finding user from database
-    const user = await this.userRepository.findUserByEmail({ email });
-    if (user) {
-      return true;
+  //VALIDATE AND REGISTER USER IF USER NOT IN DB:
+  async validateUser(details: UserDetails) {
+    console.log('UserService');
+    console.log(details);
+    const user = await this.userRepository.findOneBy({ email: details.email });
+    if (!user) {
+      const newUser = this.userRepository.create(details);
+      return this.userRepository.save(newUser);
     } else {
-      return false;
+      console.log('user logged in');
     }
   }
 
-  //CREATE USER:
-  async createUser(details: UserDetails) {
-    const user = await this.userRepository.save(details);
-    //return user;
+  //To find user:
+  async findUser(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    return user;
   }
 }

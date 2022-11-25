@@ -15,25 +15,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       scope: ['profile', 'email'],
     });
   }
+
+  //GETTING ACCESS & REFRESH TOKENS / VALIDATING USER:
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     //Console logging the access and refresh tokens:
     console.log(`Access token: ${accessToken}`);
     console.log(`Refresh token: ${refreshToken}`);
-
-    //Check if user exists:
-    const userExists = await this.userService.findUser({
+    const user = this.userService.validateUser({
       email: profile.emails[0].value,
+      name: profile.displayName,
     });
-
-    if (!userExists) {
-      //create user using user.service.ts create function:
-      const user = await this.userService.createUser({
-        email: profile.emails[0].value,
-        name: profile.displayName,
-      });
-      console.log({ message: `user ${profile.displayName} has been created` });
-    } else {
-      console.log('user exists, please login');
-    }
+    console.log('validating');
+    console.log(user);
+    return user || null;
   }
 }

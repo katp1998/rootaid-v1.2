@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { User } from './database/models/user.model';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { User } from './database/models/user.model';
       entities: [User],
       synchronize: true,
     }),
+    PassportModule.register({ session: true }),
   ],
   controllers: [AppController],
   providers: [AppService],
