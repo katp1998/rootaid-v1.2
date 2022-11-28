@@ -4,26 +4,25 @@ import { User } from "../types/user.type";
 
 const API_URL = "/user";
 
-const register = (userData:User) => {
-  return axios.post(API_URL + "/register", userData)
-    .then((response) => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+const register = async (userData: User) => {
+  const response = await axios.post(API_URL + '/register',userData)
 
-      return response;
-    });
-};
+  if (response.data)  {
+     localStorage.setItem('user',JSON.stringify(response.data))
+  }
 
-const login = (userData: User) => {
-   return axios.post(API_URL + "/login",userData)
-    .then((response) => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      return response;
-    });
-};
+  return response.data
+}
+
+const login = async (userData: User) => {
+ const response = await axios.post(API_URL + '/login', userData)
+
+ if (response.data.token)  {
+     localStorage.setItem('user',JSON.stringify(response.data))
+  }
+
+  return response.data
+}
 
 const logout = () => {
   localStorage.clear();

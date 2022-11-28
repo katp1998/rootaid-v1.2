@@ -9,16 +9,19 @@ import useStore from '../store/store';
 
 export default function LoginPage() {
 
-  const setUser = useStore((state:any) => state.setUser)
-  const setLoading = useStore((state:any) => state.setLoading)
-  const setError = useStore((state:any) => state.setError)
-  const error = useStore((state:any) => state.user.error)
-  
   const [fields,setFields] = useState({
     name: '',
     email:'',
     password: ''
   }) 
+
+  const setUserStore = useStore((state:any) => state.setUserStore)
+  const setError = useStore((state:any) => state.setError)
+  const isError = useStore((state:any) => state.isError)
+  const isLoggedIn = useStore((state:any) => state.isLoggedIn)
+  const errorMessage = useStore((state:any) => state.errorMessage)
+  const reset  = useStore((state:any) => state.reset)
+
 
   const onChange =  (event:any) =>{
     setFields({...fields, [event.target.name] : event.target.value});
@@ -28,35 +31,30 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() =>  {
-    setError('')
-    const user = authService.getCurrentUser();
-
-    if (user) {
-      navigate("/");
-      window.location.reload();
+    if(isError) {
+      setError(errorMessage)
     }
-
-  },[])
+    if(isLoggedIn) {
+      navigate('/')
+      window.location.reload()
+    }
+    reset()
+  },[isLoggedIn])
 
   const handleRegister = async (e :any) => {
     e.preventDefault();
-    try {
-      const user : User = {
-        email: fields.email as string,
-        password: fields.password as string
-      } 
-      const response  = await authService.register(user)
-      if(response.data.error){
-        setError(response.data.error)
-      }else{
-        setUser({email:fields.email,name:response.data.name,isLoggedIn:true})
-        setError('')
-        navigate("/");
-        window.location.reload();
-      }
 
-    } catch (error) {
-        setError('Internal Server Error')
+    const user : User = {
+      email: fields.email as string,
+      password: fields.password as string
+    } 
+    try {
+      const response = await authService.register(user)
+      setUserStore({name:response.name})
+
+    } catch (error : any) {
+      const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong'
+      setError(message)
     }
       
   };
@@ -88,7 +86,7 @@ export default function LoginPage() {
           <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
           <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
           <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button>  
-          <h1>{error}</h1>
+          <h1>{errorMessage}</h1>
         </Box>
         </form>
     </div>
