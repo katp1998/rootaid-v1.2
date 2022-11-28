@@ -4,7 +4,7 @@ import {
 } from 'class-validator'
 
 export class userCreatedto {
-
+    
     @IsString()
     name: string;
 
@@ -13,5 +13,4 @@ export class userCreatedto {
 
     @IsString()
     password: string;
-
 }
