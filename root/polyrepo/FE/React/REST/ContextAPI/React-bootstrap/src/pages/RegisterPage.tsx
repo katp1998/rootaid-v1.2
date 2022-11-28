@@ -1,38 +1,30 @@
 import {useState,useEffect} from 'react'
 import { useNavigate } from "react-router-dom";
-import authService from '../api/authService';
 import { User } from '../types/user.type';
+import { useAuth } from '../contexts/AuthContext';
+import authService from '../api/authService'
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import styles from '../styles/Home.module.css'
 
-
-import useStore from '../store/store';
-
-export default function LoginPage() {
+export default function RegisterPage() {
   const [fields,setFields] = useState({
     name: '',
     email:'',
     password: ''
   }) 
 
-  const setUserStore = useStore((state:any) => state.setUserStore)
-  const setError = useStore((state:any) => state.setError)
-  const isError = useStore((state:any) => state.isError)
-  const isLoggedIn = useStore((state:any) => state.isLoggedIn)
-  const errorMessage = useStore((state:any) => state.errorMessage)
-  const reset  = useStore((state:any) => state.reset)
+  
 
+  const {  errorMessage, isError ,setUserStore,setError, isLoggedIn,reset} = useAuth()
+  const navigate = useNavigate()
 
   const onChange =  (event:any) =>{
     setFields({...fields, [event.target.name] : event.target.value});
-    setError('')
   }
 
-  const navigate = useNavigate();
-
-  useEffect(() =>  {
+  useEffect(() => {
     if(isError) {
       setError(errorMessage)
     }
@@ -40,25 +32,28 @@ export default function LoginPage() {
       navigate('/')
       window.location.reload()
     }
-    reset()
+    reset();
   },[isLoggedIn])
 
   const handleRegister = async (e :any) => {
     e.preventDefault();
 
     const user : User = {
+      name: fields.name as string,
       email: fields.email as string,
       password: fields.password as string
-    } 
+    }
     try {
       const response = await authService.register(user)
-      setUserStore({name:response.name})
-
+        setUserStore({name:response.name})
+        console.log(isLoggedIn)
+      
+      
     } catch (error : any) {
       const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong'
       setError(message)
     }
-      
+
   };
 
   return (
@@ -81,7 +76,7 @@ export default function LoginPage() {
         <Form.Control type="password" placeholder="Enter password"  name="password" onChange={onChange} value={fields.password}/>
       </Form.Group>
 
-      <Button variant="primary" type="submit" onSubmit={handleRegister} className={styles.btn}>
+      <Button variant="primary" type="submit"  className={styles.btn}>
         Submit
       </Button>
       <Form.Label>{errorMessage}</Form.Label>
