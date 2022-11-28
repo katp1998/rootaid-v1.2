@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { APP_GUARD } from '@nestjs/core';
 import {
   KeycloakConnectModule,
   PolicyEnforcementMode,
@@ -11,6 +7,10 @@ import {
   AuthGuard,
   RoleGuard
 } from 'nest-keycloak-connect';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import {
       {
         envFilePath: '.env',
         isGlobal: true
-      }
+    }
     ),
     KeycloakConnectModule.register(
       {
@@ -29,11 +29,9 @@ import {
         policyEnforcement: PolicyEnforcementMode.PERMISSIVE, 
         tokenValidation: TokenValidation.ONLINE,
       }),
-    UserModule
-  ],
+    UserModule],
   controllers: [AppController],
-  providers: [
-    AppService,
+  providers: [AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

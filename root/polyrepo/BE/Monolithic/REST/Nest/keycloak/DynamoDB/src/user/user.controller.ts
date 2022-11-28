@@ -1,4 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Get
+} from '@nestjs/common';
 import { userCreatedto } from './dto/userCreate.dto';
 import { UserService } from './user.service';
 import {
@@ -8,34 +13,33 @@ import {
 
 @Controller('user')
 export class UserController {
-
     constructor(
         private userService: UserService
     )
     { }
 
-// Register user
-@Public()
-@Post('register')
-createUser(@Body() userCreateDTO: userCreatedto)
-{
-    return this.userService.createUser(userCreateDTO);
-}
+    // Register user
+    @Public()
+    @Post('register')
+    createUser(@Body() userCreateDTO: userCreatedto)   
+    {
+        return this.userService.createUser(userCreateDTO);
+    }
 
-// Login user
-@Public()
-@Post('login')
-loginUser(@Body() userCreateDTO: userCreatedto)
-{
-    return this.userService.loginUser(userCreateDTO);
-}
+    // Login user
+    @Public()
+    @Post('login')
+    loginUser(@Body() userCreateDTO: userCreatedto)
+    {
+        return this.userService.loginUser(userCreateDTO);
+    }
 
-// protect route
+    // protect route
+    @Roles({ roles: [] })
+    @Get()
+    getuser()
+    {
+        return "hello";
+    }
 
-@Roles({ roles: [] })
-@Get()
-getuser()
-{ 
-    return "hello";
-}
 }

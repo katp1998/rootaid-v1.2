@@ -3,10 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { userCreatedto } from './dto/userCreate.dto';
 import { logindto } from './dto/login.dto';
 import { stringify } from 'qs';
-import {
-    config,
-    DynamoDB
-} from 'aws-sdk';
+import { User } from 'database/models/user.schema';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -15,32 +12,22 @@ export class UserService {
         private readonly httpService: HttpService
     ) { }
 
-    private con =  config.update({
-        region: process.env.REGION,
-        accessKeyId: process.env.ACCESS_KEY_ID,
-        secretAccessKey: process.env.SECRECT_ACCESS_KEY_ID
-    });
-
-    private dynamoClient = new DynamoDB.DocumentClient();
-
-    private TABLE_NAME = 'nestjs';
-
-     // Register user
+    // Register user
     
     async createUser(userCreateDTO: userCreatedto) {
-        
-        try{
+    
             const {
                 username,
                 password,
                 email
             } = userCreateDTO;
 
-            const existingUser = await this.getUserByEmail(email);
+            const existingUser = await this.findUserByEmail(email);
 
-            if (!existingUser)
+            if (existingUser.count == 0 )
             {
                 const token = await this.genarateUserToken();
+                try{
                 const response = await this.httpService.axiosRef(
                     {
                         method: 'post',
@@ -61,36 +48,22 @@ export class UserService {
                         }
                         
                     });
-
-                    const user = {
-                        userid: uuid(),
-                        ...userCreateDTO
-                    }
-    
-                    try {
-
-                        await this.dynamoClient
-                            .put({
-                        
-                                TableName: this.TABLE_NAME,
-                                Item: user,
-                      
-                            })
-                            .promise();
-                    }
-                    catch (error)
-                    {
-                        throw new HttpException({
-                            status: HttpStatus.NOT_ACCEPTABLE,
-                            message: error
-                        }, HttpStatus.NOT_ACCEPTABLE);
-                    }
-            
+                }
+                catch (error)
+                {
                     throw new HttpException({
-                        status: HttpStatus.CREATED,
-                        message: 'Sucessfully created',
-                        user:user
-                    }, HttpStatus.CREATED);
+                        status: HttpStatus.NOT_ACCEPTABLE,
+                        message: 'Already Username registered'
+                    }, HttpStatus.NOT_ACCEPTABLE);
+                }
+
+                const newUser = await User.create({ "userid": uuid(), "name": username, "email": email, "password": password });
+    
+                throw new HttpException({
+                    status: HttpStatus.CREATED,
+                    message: 'Sucessfully created',
+                    user:newUser
+                  }, HttpStatus.CREATED)
                 
             }
 
@@ -99,16 +72,6 @@ export class UserService {
                 status: HttpStatus.NOT_ACCEPTABLE,
                 message: 'Already email registered'
               }, HttpStatus.NOT_ACCEPTABLE)
-  
-        }
-        catch (error)
-        {
-            throw new HttpException({
-                status: HttpStatus.NOT_ACCEPTABLE,
-                message: error
-              }, HttpStatus.NOT_ACCEPTABLE)
-        }
-
 
         
     }
@@ -146,12 +109,12 @@ export class UserService {
                 }, HttpStatus.UNAUTHORIZED);
             }
             
-            const user = await this.getUserByUsername(username);
+            const user = await this.findUserByUsername(username);
             
             throw new HttpException({
                 status: HttpStatus.OK,
                 message: 'Sucessfully Logged In',
-                user: user,
+                user: user[0],
                 access_token: data.access_token,
           }, HttpStatus.OK);
         
@@ -183,34 +146,15 @@ export class UserService {
         }
     }
 
-   // find user by email ID
+    // Get user by email
+    findUserByEmail(email: string)
+    {
+        return  User.scan('email').contains(email).exec();
+    } 
 
-    async getUserByEmail(email: string) {
-        const params = {
-            TableName: this.TABLE_NAME,
-            FilterExpression: 'email = :email',
-            ExpressionAttributeValues: { ':email': email }
-        };
-
-        const resp = await this.dynamoClient.scan(params).promise(); 
-    
-        return resp.Items[0];
-    }
-    
-    // find user by username
-
-    async getUserByUsername(username: string) {
-        
-        const params = {
-            TableName : this.TABLE_NAME,
-            FilterExpression : 'username = :username',
-            ExpressionAttributeValues : {':username' : username}
-        };
-    
-    
-             const resp =await this.dynamoClient.scan(params).promise(); 
-        
-       return resp.Items[0];
+    // Get user by username
+    findUserByUsername(username: string) {
+        return  User.scan('name').contains(username).exec();
     }
 
 }
