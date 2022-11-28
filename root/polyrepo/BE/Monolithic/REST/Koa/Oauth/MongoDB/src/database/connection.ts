@@ -1,5 +1,8 @@
-import {createConnection} from 'typeorm'
-import { User } from './models/user.model'
+import { createConnection } from 'typeorm';
+import { User } from './models/user.model';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const connection = createConnection({
   type:'mongodb',
@@ -8,7 +11,7 @@ export const connection = createConnection({
   useUnifiedTopology:true,
   logging: true,
   synchronize: true,
-  entities: [User]
+  entities: [User],
   
-})
+});
 

@@ -1,26 +1,26 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
+import { UserService } from './user.service';
 import { JwtStrategy } from './jwt.strategy';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot(
-    {
-      envFilePath: '.env', 
-      isGlobal: true
+      {
+        envFilePath: '.env',
+        isGlobal: true
       }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' }
-    })
+      signOptions: { expiresIn:'1d'}
+  })
   ],
+  controllers: [UserController],
   providers: [
     UserService,
     JwtStrategy
-  ],
-  controllers: [UserController]
+  ]
 })
 export class UserModule {}

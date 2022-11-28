@@ -1,9 +1,9 @@
 # # Dependencies
 
-### dynamoDB
+### DynamoDB
 
-- yarn add aws-sdk
-- yarn add --dev @types/uuid
+- yarn add dynamoose
+- yarn add uuid
 
 ### Keycloak
 
@@ -17,13 +17,11 @@
 
 To run this project, you will need to add the following environment variables to your .env file
 
-`REGION`= Your dynamoDB region
+`REGION`= Your DynamoDB region
 
-`ACCESS_KEY_ID`= Your dynamoDB access key ID
+`ACCESS_KEY_ID`= Your Role access key
 
-`SECRECT_ACCESS_KEY_ID`= Your dynamoDB secrect access key ID
-
-`AUTH_SEVER_URL`= Keycloak base url
+`SECRECT_ACCESS_KEY_ID`= Your Role secret access key
 
 `REALM`=Your Keycloak realm
 
