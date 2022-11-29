@@ -1,9 +1,19 @@
-import React from 'react'
 
-function HomePage() {
+import {  useAppSelector } from '../store/hooks';
+
+
+export default function HomePage() {
+
+  const {user} = useAppSelector((state) => state.auth)
+
   return (
-    <div><h1>WELCOME TO THE HOMEPAGE!</h1></div>
+    <>
+    <div>
+      <h3>
+      Welcome {user?.name}
+      </h3>
+    </div>
+    </>
+
   )
 }
-
-export default HomePage

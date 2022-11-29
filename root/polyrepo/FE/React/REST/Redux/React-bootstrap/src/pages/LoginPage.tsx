@@ -1,92 +1,79 @@
-import React, {SyntheticEvent, useEffect, useState} from 'react'
-import {Card, Button, Form} from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import {reset} from '../features/auth/authSlice'
-import { login } from '../features/auth/authService';
+import {useState,useEffect} from 'react'
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { User } from '../types/user.type';
+import { login , reset } from '../features/authSlice/auth.slice';
 
-//IMPORTING COMPONENTS:
-import FormContainer from '../components/FormContainer'
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import styles from '../styles/Home.module.css'
 
-function LoginPage() {
 
-  let navigate = useNavigate();
-  let dispatch = useDispatch();
 
-  //CONFIGURING STATES:
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+export default function LoginPage() {
 
-  ///states from authSlice
-  const {isError, isSuccess, isLoading, message} = useSelector((state) => state.auth)
+  const [fields,setFields] = useState({
+    email:'',
+    password: ''
+  }) 
 
-  //monitor states
-  useEffect(()=>{
-    //if isError state = true
-    if(isError){
-      console.log(message)
+  const [error,setError] = useState('')
+
+  const navigate = useNavigate()
+  const dispatch= useAppDispatch()
+  const {user, isLoading , isError, message} = useAppSelector((state) => state.auth)
+  
+  useEffect(() =>  {
+    if(isError) {
+      setError(message)
     }
-    //if isSuccess {and user} states = true
-//if(user){navigate('/')} --> does not work
-    if(isSuccess){
+ 
+    if(user) {
       navigate('/')
+      window.location.reload();
     }
-
     dispatch(reset())
-  }, [isError, isSuccess, message, navigate, dispatch])
+  },[user, isError,  message, navigate, dispatch])
 
-
-  const submitHandler = (e:SyntheticEvent) =>{
-    e.preventDefault()
-
-    /* INTERACTION WITH THE BACKEND REQUIRED TO BE INSERTED HERE **/
-    const userData = { email, password}
-    dispatch(login(userData))
-
-    console.log("Submitted")
-
-    //redirect user
-    navigate("/")
+  const onChange =  (event:any) =>{
+    setFields({...fields, [event.target.name] : event.target.value});
+    
   }
 
 
+  const handleLogin = async (e :any) => {
+    e.preventDefault();
+    
+    const user : User = {
+      email: fields.email as string,
+      password: fields.password as string
+    }
+
+    dispatch(login(user))
+    
+  };
+
   return (
     <>
-    <FormContainer>
-      <Card>
-      <Card.Header as="h1">LOGIN</Card.Header>
-      <Card.Body>
-        <Card.Text>
-          <Form onSubmit={submitHandler}>
-          <Form.Floating className="mb-3">
-            <Form.Control
-              id="floatingInputCustom"
-              type="email"
-              placeholder="name@example.com"
-              value = {email}
-              onChange={e => setEmail(e.target.value)}
-            />
-            <label htmlFor="floatingInputCustom">Email address</label>
-          </Form.Floating>
-          <Form.Floating>
-            <Form.Control
-              id="floatingPasswordCustom"
-              type="password"
-              placeholder="Password"
-              value = {password}
-              onChange={e => setPassword(e.target.value)}
-            />
-            <label htmlFor="floatingPasswordCustom">Password</label>
-          </Form.Floating>
-          <br />
-          <Button variant="danger">Login</Button>
-      </Form>
-        </Card.Text>
-      </Card.Body>
-    </Card> 
-</FormContainer>
-</>
+    <div>
+    <h2 className={styles.title}>Login</h2>
+    <Form className={styles.form} onSubmit={handleLogin} >
+      <Form.Group className="mb-4" controlId="username">
+        <Form.Label>Name</Form.Label>
+        <Form.Control type="text" placeholder="Enter name" name='email' onChange={onChange} value={fields.email} />
+      </Form.Group>
+
+      <Form.Group className="mb-4" controlId="password">
+        <Form.Label>Password</Form.Label>
+        <Form.Control type="password" placeholder="Enter password" onChange={onChange} name='password' value={fields.password} />
+      </Form.Group>
+
+      <Button variant="primary" type="submit" className={styles.btn}>
+        Submit
+      </Button>
+      <Form.Label>{error}</Form.Label>
+    </Form>
+    </div>
+    </>
   )
 }
-
-export default LoginPage
