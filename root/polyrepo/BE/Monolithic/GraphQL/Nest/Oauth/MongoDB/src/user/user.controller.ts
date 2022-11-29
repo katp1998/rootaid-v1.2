@@ -20,14 +20,14 @@ export class UserController {
     
 
      //To check if the user is serialized or not
-  @Get('status')
-  user(@Request() req) {
-    console.log(req.user);
-    if (req.user) {
-      return { msg: 'Authenticated' };
-    } else {
-      return { msg: 'Unauthenticated' };
+    @Get('status')
+    user(@Request() req) {
+      console.log(req.user);
+      if (req.user) {
+        return { msg: 'Authenticated' };
+      } else {
+        return { msg: 'Unauthenticated' };
+      }
     }
-  }
 
 }
