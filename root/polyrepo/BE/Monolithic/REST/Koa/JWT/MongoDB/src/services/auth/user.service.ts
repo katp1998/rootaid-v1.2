@@ -39,7 +39,7 @@ const registerUser = async (name: string, email: string, password: string) => {
 
 const loginUser = async (email: string, password: string) => {
   try {
-    const existingUser = await findUser({ email });
+    const existingUser = await findUser( email );
     console.log(existingUser);
 
     if (existingUser) {
