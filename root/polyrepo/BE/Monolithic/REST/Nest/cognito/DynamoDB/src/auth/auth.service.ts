@@ -2,10 +2,8 @@ import { Injectable } from '@nestjs/common';
 
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
-import { nanoid } from "nanoid"
-// import { createUser } from '../database/repository/user.repository';
+import { v4 as uuidv4 } from 'uuid'
 import { hashPassword } from '../utils/hashPassword';
-
 import { User } from '../database/models/user.schema'
 
 @Injectable()
@@ -35,25 +33,20 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     UserAttributes: userAttr,
   }
 
-  const id = nanoid()
+  const id = uuidv4()
 
     try {
     const email: string = userAttr[0].Value;
     const hashedPassword: string  = await hashPassword(password)
-    // const dbResponse = await createUser({name: username, email , password: hashedPassword});
-    // console.log(`Created database entry: 
-    // username: ${username},
-    // email: ${email},
-    // message: ${dbResponse}`);
 
     const user = await User.create({"id": id, "username": username, "email": email, "password": hashedPassword});
     console.log(user);
 
-    // const cognitoResponse = await this.cognitoService.signUp(params).promise();
-    // console.log(`Created cognito user:
-    // username: ${username},
-    // email: ${email},
-    // message: ${cognitoResponse.$response}`);
+    const cognitoResponse = await this.cognitoService.signUp(params).promise();
+    console.log(`Created cognito user:
+    username: ${username},
+    email: ${email},
+    message: ${cognitoResponse.$response}`);
   } catch (error) {
     console.log(`Error occurred: ${error}`);
   };
