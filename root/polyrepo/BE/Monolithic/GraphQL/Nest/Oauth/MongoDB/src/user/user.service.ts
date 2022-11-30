@@ -31,12 +31,11 @@ export class UserService {
 //VALIDATE AND REGISTER USER IF USER NOT IN DB:
   async validateUser(details: CreateUserInput) {
 
-    const user = await this.userRepository.findOneBy({ email: details.email });
+    const user = await this.findUserByEmail(details.email);
 
     if (!user)
     {
-      const newUser = this.userRepository.create(details);
-      return this.userRepository.save(newUser);
+      return this.userRepository.save(details);
     }
     else
     {
@@ -45,15 +44,19 @@ export class UserService {
 
   }
 
-  //To find user:
-  async findUser(id: number) {
+  //To find user by id:
+  async findUserById(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     return user;
   }
 
+   //To find user by email:
+   async findUserByEmail(email: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    return user;
+  }
 
   // sample create user
-  // Create user
     
   async registerUser(createUserInput: CreateUserInput) {
     try {
