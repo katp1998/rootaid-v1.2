@@ -1,19 +1,31 @@
 //koa was not used in this process
 import { User } from '../models/user.model';
 
-//@DESC: FIND IF USER EXISTS
-//@ROUTE: POST 
-export const findUser = async (email: any) =>{
+// find user by email
+export const findUser = async (email: any) => {
   try {
-    const existingUser = await User.findOneBy({email});
+    const existingUser = await User.findOne({ where: { email } });
+
     return existingUser;
+
   } catch (error) {
     console.log(error, 'from user.repository');
   }
 };
 
-//@desc CREATING USER
-//@route POST 
+// find user by email
+export const findUserByUsername = async (name: any) => {
+  try {
+    const existingUser = await User.findOne({ where: { name } });
+
+    return existingUser;
+
+  } catch (error) {
+    console.log(error, 'from user.repository');
+  }
+};
+
+// create user
 export const createUser = async ({ name, email, password }: { name: string, email: string, password: string }) =>{
   try {
     //CREATE USER:
