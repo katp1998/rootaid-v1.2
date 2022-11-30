@@ -8,7 +8,7 @@ const ddb = new dynamoose.aws.ddb.DynamoDB({
       secretAccessKey: process.env.DYNAMODB_SECRET_ACCESS_KEY,
       accessKeyId: process.env.DYNAMODB_ACCESS_KEY,
     },
-    region: "us-east-1"
+    region: process.env.REGION
 });
 
 // Set DynamoDB instance to the Dynamoose DDB instance
