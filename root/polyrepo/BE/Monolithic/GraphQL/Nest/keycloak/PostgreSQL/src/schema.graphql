@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  name: String!
+  password: String!
+  email: String!
+}
+
+type LoggedInUserOutput {
+  message: String!
+  refresh_token: String
+  access_token: String
+  user: User
+}
+
+type CreateUserOutput {
+  message: String!
+  user: User!
+}
+
+type Query {
+  getAllUser: [User!]!
+}
+
+type Mutation {
+  logIn(input: LoginUserInput!): LoggedInUserOutput!
+  createUser(input: CreateUserInput!): CreateUserOutput!
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
+}
+
+input CreateUserInput {
+  username: String!
+  email: String!
+  password: String!
+}
