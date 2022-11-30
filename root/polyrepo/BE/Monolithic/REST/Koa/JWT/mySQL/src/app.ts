@@ -3,6 +3,7 @@ import { DefaultState, DefaultContext } from 'koa';
 import Router from 'koa-router';
 import dotenv from 'dotenv';
 import { connection } from './database/connection';
+import userRoutes from 'api/routes/user.routes';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -12,7 +13,7 @@ const app: Koa<DefaultState, DefaultContext> = new Koa();
 const router: Router = new Router();
 
 //ADDING ROUTES:
-//app.use("/", userRoutes)
+app.use(userRoutes.routes()).use(userRoutes.allowedMethods);
 
 //CONNECTING TO DATABASE:
 connection.then(() => console.log('Database connected')).catch((error) => console.log(error, 'Database connection unsuccessful'));

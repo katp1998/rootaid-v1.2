@@ -3,7 +3,7 @@ import { User } from '../models/user.model';
 
 //@DESC: FIND IF USER EXISTS
 //@ROUTE: POST 
-export const findUser = async (email: any) =>{
+export const findUser = async (email: string) =>{
   try {
     const existingUser = await User.findOneBy({email});
     return existingUser;

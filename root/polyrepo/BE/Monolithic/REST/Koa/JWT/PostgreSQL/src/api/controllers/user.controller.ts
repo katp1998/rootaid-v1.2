@@ -1,57 +1,50 @@
-import { registerUser, loginUser } from '../../services/auth/user.service';
+import { registerUser, loginUser } from "../../services/auth/user.service";
 
 //REGISTER REQUEST INTERFACE
 interface RegisterRequest {
-  username: string;
+  name: string;
   email: string;
-  password: string
-
+  password: string;
 }
 
 //LOGIN REQUEST INTERFACE
 interface LoginRequest {
-  username: string;
-  password: string
-
+  email: string;
+  password: string;
 }
 
 //REGISTERING USER
 const handleRegister = async (ctx: any) => {
-  
-
   try {
-    const { username, email, password } = <RegisterRequest>ctx.request.body;
-    
+    const { name, email, password } = <RegisterRequest>ctx.request.body;
     //PASSING INTO METHOD IN USER.SERVICE
-    const data = await registerUser(username, password, email);
-    return data;
-
-    // ctx.body = `New user added: ${username},
-    // email: ${email},
-    // password: ${password}`;
-
+    const data = await registerUser(name, email, password);
+    ctx.body = {
+      name: name,
+      response: data,
+    };
   } catch (error) {
-    return error;
+    ctx.body(error);
   }
-
 };
 
-//LOGIN USER
+//LOGIN USER:
 const handleLogin = async (ctx: any) => {
+  const { email, password } = <LoginRequest>ctx.request.body;
+
   try {
-    const { username, password } = <LoginRequest>ctx.request.body;
-
     //PASSING INTO METHOD IN USER.SERVICE
-    const data = await loginUser(username, password);
-    return data;
-
-    //ctx.body = `Successful login: ${username}`;
-
+    const data = await loginUser(email, password);
+    ctx.body = {
+      status: "Successful Login",
+      info: data,
+    };
   } catch (error) {
-    return error;
+    ctx.body = {
+      status: "Unsuccessful Login",
+      ErrorCode: error,
+    };
   }
-
-  
 };
 
 export { handleRegister, handleLogin };
