@@ -5,6 +5,7 @@ import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid'
 import { hashPassword } from '../utils/hashPassword';
 import { User } from '../database/models/user.schema'
+import { createUser } from 'src/database/repository/user.repository';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,8 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     const email: string = userAttr[0].Value;
     const hashedPassword: string  = await hashPassword(password)
 
-    const user = await User.create({"id": id, "username": username, "email": email, "password": hashedPassword});
+    // const user = await User.create({"id": id, "username": username, "email": email, "password": hashedPassword});
+    const user = await createUser({id, username, password: hashedPassword, email})
     console.log(user);
 
     const cognitoResponse = await this.cognitoService.signUp(params).promise();
