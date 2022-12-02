@@ -1,18 +1,28 @@
+# # Dependencies
 
-This is the boilerplate generated for express-mySQL combination.
+- yarn add keycloak-connect
+- yarn add express-session
+- yarn add @types/express-session
+- yarn add qs
 
-Prerequisties:
-- mySQL server installed
+## Environment Variables
 
-Dependencies:
-- TypeORM
-This dependency is added to access Databases with ease, without using complex queries. This is a slow approach in comparison to using mySQL queries
+To run this project, you will need to add the following environment variables to your .env file
 
-To configure prettier and eslint-airbnb-config-typescript:
-    1. Install the following dependencies:
-        yarn add @typescript-eslint/eslint-plugin eslint eslint-config-airbnb-base eslint-config-airbnb-typescript eslint-plugin-import eslint-plugin-prettier prettier --dev
-    2. Run:
-        yarn run lint
-    3. Run:
-        yarn run lint --fix
-    4. Fix the remaining errors manually
+`MONGO_URI`=Your MonogoDB URL
+
+`PORT`=Your server runnig port
+
+`AUTH_SEVER_URL`= Keycloak base url
+
+`REALM`=Your Keycloak realm
+
+`CLIENT_ID`= Project client
+
+`SECRET_ID`= Project client's secret id
+
+`REALM_PUBLIC_KEY`= Your Keycloak realm public key
+
+`TOKEN_CLIENT_ID`= Admin cli
+
+`TOKEN_SECRET_ID`= Admin cli secret id
