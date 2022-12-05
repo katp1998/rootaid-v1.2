@@ -1,0 +1,35 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LoginUserOutput {
+  access_token: String!
+  refresh_token: String!
+  expires_in: String!
+}
+
+type CreateUserOutput {
+  username: String!
+  password: String!
+  email: String!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): CreateUserOutput!
+  loginUser(input: LoginUserInput!): LoginUserOutput!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  email: String!
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
+}
