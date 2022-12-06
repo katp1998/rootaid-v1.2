@@ -5,6 +5,7 @@ import { createConnection, getMongoManager, getMongoRepository } from 'typeorm';
 import { User } from './database/models/user.models';
 import 'reflect-metadata';
 import { connection } from './database/connection';
+import userRouter from './api/routes/user.routes';
 //import userRoutes
 
 dotenv.config();
@@ -22,7 +23,7 @@ app.use(urlencoded({ extended:true }));
 connection.then(() => console.log('Database connected')).catch((error) => console.log(error, 'Database connection unsuccessful'));
 
 //ADDING USER ROUTES:
-
+app.use('/auth', userRouter);
 
 //CONNECTION TO PORT:
 app.listen(PORT, () => {
