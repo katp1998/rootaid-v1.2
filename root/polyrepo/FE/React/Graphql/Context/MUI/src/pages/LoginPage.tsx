@@ -47,16 +47,20 @@ export default function LoginPage() {
   }
 `
 
-
+const { loading, error, data } = useQuery(LOGIN_QUERY, {
+  variables: {
+    email: fields.email,
+    password: fields.password
+  }
+});
 
 
   const handleLogin = (e :any) => {
     e.preventDefault();
-    const { loading, error, data } = useQuery(LOGIN_QUERY, {
-      variables: {fields}
-    });
+
     if(data){
-      console.log(data)
+      localStorage.setItem('user',JSON.stringify(data))
+      setUserStore({name:data.login.name,email:fields.email})
     }
 
 
@@ -77,8 +81,6 @@ export default function LoginPage() {
     //   }
     // }
   }
-
-
 
   return (
 <>
