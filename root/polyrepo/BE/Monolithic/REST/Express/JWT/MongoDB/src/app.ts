@@ -1,8 +1,6 @@
 import { json, urlencoded } from 'body-parser';
 import express from 'express';
 import dotenv from 'dotenv';
-import { createConnection, getMongoManager, getMongoRepository } from 'typeorm';
-import { User } from './database/models/user.models';
 import 'reflect-metadata';
 import { connection } from './database/connection';
 //import userRoutes

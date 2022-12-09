@@ -1,6 +1,6 @@
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { Request , Response , NextFunction } from 'express'
-import {userFind} from '../../services/userService'
+import {userFind} from '../../services/user.service'
 
 import config from '../../../config'
 

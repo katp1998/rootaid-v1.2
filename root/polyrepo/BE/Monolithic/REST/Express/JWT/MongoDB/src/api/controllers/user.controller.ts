@@ -1,19 +1,18 @@
 import { Request, Response , NextFunction } from "express"
-
 import { JwtPayload } from "jsonwebtoken";
 export interface CustomRequest extends Request {
     user: any | JwtPayload;
    }
-
-const {signUp, logIn, userFind} = require('../../services/userService')
-
+import { registerUser, loginUser } from '../../services/user.service';
 
 
-export const registerUser = async (req :Request,res : Response,next : NextFunction) =>{
+//REGISTERING USER
+export const handleRegister = async (req :Request,res : Response,next : NextFunction) =>{
         try {
-            const {name,email,password} = req.body
-            const data = await signUp({name,email,password})
-            return res.json(data)
+            const {name,email,password} = req.body;
+            //PASSING INTO METHOD IN USER.SERVICE
+            const data = await registerUser(name,email,password);
+            return res.json(data);
         } catch (error : any) {
             res.status(500).json({
                 error: error.message
@@ -21,11 +20,13 @@ export const registerUser = async (req :Request,res : Response,next : NextFuncti
         }
     }
 
-export const loginUser = async (req : Request,res : Response,next : NextFunction) =>{
+//LOGIN USER:
+export const handleLogin = async (req : Request,res : Response,next : NextFunction) =>{
         try {
-            const {email,password} = req.body
-            const data = await logIn({email,password})
-            return res.json(data)
+            const {email,password} = req.body;
+            //PASSING INTO METHOD IN USER.SERVICE:
+            const data = await loginUser(email,password);
+            return res.json(data);
         } catch (error :any ) {
             res.status(500).json({
                 error: error.message
