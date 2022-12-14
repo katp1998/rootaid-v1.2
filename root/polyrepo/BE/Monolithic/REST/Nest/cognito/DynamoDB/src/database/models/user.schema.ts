@@ -5,6 +5,7 @@ const schema = new dynamoose.Schema({
     "username": String,
     "email": String,
     "password": String,
+    "refreshToken": String
 
 }, {
     "saveUnknown": true,
