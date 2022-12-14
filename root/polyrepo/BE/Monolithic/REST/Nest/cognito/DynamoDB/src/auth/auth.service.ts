@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid';
 import { hashPassword } from '../utils/hashPassword';
-import { createUser } from 'src/database/repository/user.repository';
+import { createUser, findUser, findUserByToken, removeRefreshToken, saveRefreshToken } from 'src/database/repository/user.repository';
 
 @Injectable()
 export class AuthService {
@@ -39,14 +39,18 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     const email: string = userAttr[0].Value;
     const hashedPassword: string  = await hashPassword(password)
 
-    const user = await createUser({id, username, password: hashedPassword, email})
-    console.log(user);
-
     const cognitoResponse = await this.cognitoService.signUp(params).promise();
+    this.cognitoService.globalSignOut
     console.log(`Created cognito user:
     username: ${username},
     email: ${email},
-    message: ${cognitoResponse.$response}`);
+    message: ${cognitoResponse.$response.data}`);
+
+
+    const user = await createUser({id, username, password: hashedPassword, email,})
+    console.log(user);
+
+    return cognitoResponse
   } catch (error) {
     console.log(`Error occurred: ${error}`);
   };
@@ -66,10 +70,41 @@ async loginUser(username:string, password:string) {
 
   try {
     const data = await this.cognitoService.initiateAuth(params).promise()
-    return data
+    const refreshToken = data.AuthenticationResult.RefreshToken as string
+
+    const existingUser = await findUser(username)
+    console.log(existingUser[0].id)
+    await saveRefreshToken(existingUser[0].id, refreshToken)
+
+    return refreshToken
   } catch (error) {
     console.log(error);
     return 'Login unsuccessful'
   }
 }
+
+async verifyRefreshToken(refreshToken:string) {
+    const params = {
+    AuthFlow: 'REFRESH_TOKEN_AUTH',
+    ClientId: this.clientId,
+    AuthParameters: {
+      'REFRESH_TOKEN': refreshToken,
+      "SECRET_HASH": this.generateHash("yicete")
+    }
+  } 
+
+  try {
+    const data = await this.cognitoService.initiateAuth(params).promise()
+    return data
+  } catch (error) {
+    console.log(error);
+    return 'Refresh token not accepted'
+  }
+}
+
+async logoutUser(refreshToken: string) {
+  const result = await removeRefreshToken(refreshToken)
+  console.log(`service level: ${result}`)
+}
+
 }
