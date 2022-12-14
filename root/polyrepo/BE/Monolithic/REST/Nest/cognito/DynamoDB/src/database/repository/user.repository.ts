@@ -17,8 +17,12 @@ import { User } from '../models/user.schema';
 
 export const findUserByToken = async (refreshToken : any) => {
     try {
-        const existingUser = await User.scan("refreshToken").contains(refreshToken).exec()
-        return existingUser[0].id
+        const scanUser = await User.scan("refreshToken").contains(refreshToken).exec()
+        const existingUser = {
+          id: scanUser[0].id,
+          username: scanUser[0].username,
+        }
+        return existingUser
     } catch (error) {
         console.log(error)
     }
@@ -44,7 +48,7 @@ export const saveRefreshToken =async (userID: string , refreshToken :string) => 
 
 export const removeRefreshToken = async (refreshToken : string) => {
     try {
-        const userId = await findUserByToken(refreshToken)  
+        const userId = await (await findUserByToken(refreshToken)).id  
         
         const updatedUser = await User.update({id: userId, refreshToken: ''})  
         

@@ -45,20 +45,10 @@ export class AuthController {
     const cookies = request.cookies
     if (!cookies?.jwt) return response.sendStatus(204); 
     const refreshToken = cookies.jwt
-  
 
-
-    await this.authService.logoutUser(refreshToken)
-
-    // if (!revokeRefreshToken) {
-    //     response.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
-    //     return response.sendStatus(204);
-    // }   
+    await this.authService.logoutUser(refreshToken) 
     
     response.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
-
     return response.sendStatus(200);
-    // console.log(`controller: ${refreshToken}`)
-    // return this.authService.logoutUser(refreshToken)
     }
 }

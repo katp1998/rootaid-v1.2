@@ -84,16 +84,17 @@ async loginUser(username:string, password:string) {
 }
 
 async verifyRefreshToken(refreshToken:string) {
-    const params = {
-    AuthFlow: 'REFRESH_TOKEN_AUTH',
-    ClientId: this.clientId,
-    AuthParameters: {
-      'REFRESH_TOKEN': refreshToken,
-      "SECRET_HASH": this.generateHash("yicete")
-    }
-  } 
-
+  
   try {
+    const existingUser = await findUserByToken(refreshToken)
+    const params = {
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      ClientId: this.clientId,
+      AuthParameters: {
+        'REFRESH_TOKEN': refreshToken,
+        "SECRET_HASH": this.generateHash(existingUser.username)
+      }
+    }
     const data = await this.cognitoService.initiateAuth(params).promise()
     return data
   } catch (error) {
@@ -103,8 +104,24 @@ async verifyRefreshToken(refreshToken:string) {
 }
 
 async logoutUser(refreshToken: string) {
-  const result = await removeRefreshToken(refreshToken)
-  console.log(`service level: ${result}`)
+  try {
+
+    const getAccessToken = await this.verifyRefreshToken(refreshToken)
+
+    //Removes refresh token from Dynamodb
+    await removeRefreshToken(refreshToken)
+
+    const params = {
+    AccessToken: getAccessToken as string,
+    }
+
+    const cognitoResult = await this.cognitoService.globalSignOut(params)
+    console.log("Successful logout")
+    return cognitoResult
+  } catch (error) {
+    console.log(error)
+  }
+  
 }
 
 }
