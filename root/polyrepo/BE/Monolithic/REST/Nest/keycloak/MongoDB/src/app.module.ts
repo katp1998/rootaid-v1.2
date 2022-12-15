@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'database/models/user.entity';
 import {
@@ -31,17 +32,9 @@ import { UserModule } from './user/user.module';
         policyEnforcement: PolicyEnforcementMode.PERMISSIVE, 
         tokenValidation: TokenValidation.ONLINE,
       }),
-    TypeOrmModule.forRoot(
-      {
-        type: "mongodb",
-        url:process.env.DATABASE_URL,
-        database: process.env.DATABASE_NAME,
-        entities: [User],
-        synchronize: true
-                          
-      }
-    ),
-    UserModule],
+    MongooseModule.forRoot(process.env.DATABASE_URL),
+    UserModule
+  ],
   controllers: [AppController],
   providers: [AppService,
     {
