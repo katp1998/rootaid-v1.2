@@ -1,13 +1,13 @@
 import axios from 'axios';
 import qs from 'qs'
-import config from '../../../config'
+import config from '../config/index'
 import { FilterQuery, QueryOptions, UpdateQuery } from 'mongoose';
-import UserModel, { UserDocument } from '../../database/models/user.model';
+import UserModel, { UserDocument } from '../database/models/user.model';
 
 // process.env.GOOGLE_REDIRECT_URI
 const redirectURI = config.googleRedirectURI;
 
-//INTERFACES
+//INTERFACES: 
 
 //Google Token Result structure interface: 
 interface GoogleTokenResult{
@@ -47,8 +47,6 @@ export const getGoogleAuthURL = () => {
   
     return `${rootUrl}?${qs.stringify(options)}`;
   }
-
-
 
 //getting google tokens:
   export const getTokens = async({

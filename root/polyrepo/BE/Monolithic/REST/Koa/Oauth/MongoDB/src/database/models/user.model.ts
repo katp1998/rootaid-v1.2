@@ -1,19 +1,12 @@
-import { Entity, ObjectIdColumn, Column, BaseEntity } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { model, Schema } from "mongoose";
+import { IUser } from '../types/user.type'
 
-@Entity()
-export class User extends BaseEntity {
-  @ObjectIdColumn()
-    _id!: ObjectId;
+const userSchema: Schema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  refreshToken : {default: '',  type: String, required:false}
+  
+});
 
-  @Column()
-    name!: string;
-
-  @Column()
-    email!: string;
-
-  @Column()
-    password!: string;
-
-
-}
+export default model<IUser>("User", userSchema);
