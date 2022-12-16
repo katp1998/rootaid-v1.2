@@ -11,7 +11,7 @@ export class UserRepository {
     ) {}
 
     async findUser(username: string): Promise<User> {
-        const result = await this.model.findOne({ username: "yicete" })
+        const result = await this.model.findOne({ username: username })
         console.log(result)
         return result
     }
