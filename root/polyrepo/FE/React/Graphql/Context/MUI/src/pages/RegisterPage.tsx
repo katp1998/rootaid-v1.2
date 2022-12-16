@@ -34,6 +34,24 @@ export default function RegisterPage() {
     reset()
     },[isLoggedIn])
 
+    const REGISTER_QUERY = gql`
+        mutation Register(
+            $name: String!,
+            $email: String!,
+            $password: String!
+            ) {
+            register(
+                name: $name,
+                email: $email,
+                password: $password
+                ){
+                token,
+                id,
+                name
+            }
+        }` 
+
+
     const [addUser, { loading}] = useMutation(REGISTER_QUERY, {
         update(proxy, result){
           if(loading){            
@@ -48,15 +66,14 @@ export default function RegisterPage() {
           setError(message as string)
           console.log(message)
           console.log(graphQLErrors)
-        },
-        variables: fields
+        }
     })
 
 
 
     const handleRegister = (event :any )=>{
         event.preventDefault(); 
-        addUser();
+        addUser({variables:fields});
     }
 
 
@@ -95,20 +112,5 @@ export default function RegisterPage() {
 }
 
 
-const REGISTER_QUERY = gql`
-mutation Register(
-    $name: String!,
-    $email: String!,
-    $password: String!
-    ) {
-    register(
-        name: $name,
-        email: $email,
-        password: $password
-        ){
-        token,
-        id,
-        name
-    }
-}` 
+
 
