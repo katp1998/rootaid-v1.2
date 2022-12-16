@@ -1,52 +1,24 @@
-<<<<<<< HEAD
 import { HttpStatus, Injectable } from '@nestjs/common';
-=======
-<<<<<<< HEAD
-import { Injectable } from "@nestjs/common";
-
-import * as AWS from 'aws-sdk'
-import * as crypto from 'crypto'
-=======
-import { Injectable } from '@nestjs/common';
->>>>>>> 4251c6e0874c7875f3acc5fd7a310a9475b0f4c9
 
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
 // import { createUser } from '../database/repository/user.repository';
 import { hashPassword } from 'src/utils/hashPassword';
-<<<<<<< HEAD
 import { UserRepository } from '../database/repository/user.repository';
 // import { CreateUserDto, UpdateUserDto } from 'src/database/dto';
-=======
->>>>>>> 08d9adf003fb816f4599d822e7cfa23df32d78d2
->>>>>>> 4251c6e0874c7875f3acc5fd7a310a9475b0f4c9
 
 @Injectable()
 export class AuthService {
 constructor(private readonly repository: UserRepository) {}
 
 private config = {
-<<<<<<< HEAD
     region: process.env.REGION,
-=======
-<<<<<<< HEAD
-    region: 'us-east-1'
-}
-
-private secretHash = '1ofv95uvqt9knp7vsg7g3ark5k192g46qt73iur43mat30604u0c'
-private clientId = '51qtvnblrch9vm6cbhgfaj37sl'
-
-private cognitoService = new AWS.CognitoIdentityServiceProvider(this.config)
-=======
-    region: 'us-east-1',
->>>>>>> 4251c6e0874c7875f3acc5fd7a310a9475b0f4c9
 };
 
 private secretHash = process.env.COGNITO_SECRET;
 private clientId = process.env.COGNITO_CLIENT_ID;
 
 private cognitoService = new AWS.CognitoIdentityServiceProvider(this.config);
->>>>>>> 08d9adf003fb816f4599d822e7cfa23df32d78d2
 
 private generateHash = (username: string): string => {
     return crypto.createHmac('SHA256', this.secretHash)
@@ -54,32 +26,12 @@ private generateHash = (username: string): string => {
       .digest('base64')
 }
 
-<<<<<<< HEAD
-async register(username:string, password:string, userAttr:Array<any>) {
-=======
 async registerUser(username:string, password:string, userAttr:Array<any>) {
->>>>>>> 08d9adf003fb816f4599d822e7cfa23df32d78d2
     const params = {
     ClientId: this.clientId,
     Password: password,
     Username: username,
     SecretHash: this.generateHash(username),
-<<<<<<< HEAD
-    UserAttributes: userAttr
-  }
-
-  try {
-    const data = await this.cognitoService.signUp(params).promise()
-    console.log(data);
-    return `Registration successful: ${username}`
-  } catch (error) {
-    console.log(error);
-    return 'Registration failed'
-  }
-}
-
-async login(username:string, password:string) {
-=======
     UserAttributes: userAttr,
   }
 
@@ -115,7 +67,6 @@ async login(username:string, password:string) {
 }
 
 async loginUser(username:string, password:string) {
->>>>>>> 08d9adf003fb816f4599d822e7cfa23df32d78d2
     const params = {
     AuthFlow: 'USER_PASSWORD_AUTH',
     ClientId: this.clientId,
