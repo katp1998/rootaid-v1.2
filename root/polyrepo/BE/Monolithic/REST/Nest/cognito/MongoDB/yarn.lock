@@ -1848,6 +1848,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nestjs/mongoose@npm:^9.2.1":
+  version: 9.2.1
+  resolution: "@nestjs/mongoose@npm:9.2.1"
+  peerDependencies:
+    "@nestjs/common": ^8.0.0 || ^9.0.0
+    "@nestjs/core": ^8.0.0 || ^9.0.0
+    mongoose: ^6.0.2
+    reflect-metadata: ^0.1.12
+    rxjs: ^7.0.0
+  checksum: 5d03cc7752524ae17bb4a3dbce340a172ec9fa54fd505a83df9b94c4bffe78d656b84ba0ee88fbabe59fe57beeda2f545169ff3774c1e697dc46bfb279fbf559
+  languageName: node
+  linkType: hard
+
 "@nestjs/platform-express@npm:^9.0.0":
   version: 9.2.0
   resolution: "@nestjs/platform-express@npm:9.2.0"
@@ -2109,6 +2122,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie-parser@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@types/cookie-parser@npm:1.4.3"
+  dependencies:
+    "@types/express": "*"
+  checksum: f390f3af1b1711190dee2c2ecd9af33af81fbde8d81ee820dadb6fe1e0d80c3faba40af37c6ed36fb88b04b64870f6a021f7e9edceecd17c42fe22abe0af5005
+  languageName: node
+  linkType: hard
+
 "@types/cookiejar@npm:*":
   version: 2.1.2
   resolution: "@types/cookiejar@npm:2.1.2"
@@ -2150,7 +2172,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express-serve-static-core@npm:^4.17.18":
+"@types/express-serve-static-core@npm:^4.17.18, @types/express-serve-static-core@npm:^4.17.31":
   version: 4.17.31
   resolution: "@types/express-serve-static-core@npm:4.17.31"
   dependencies:
@@ -2158,6 +2180,18 @@ __metadata:
     "@types/qs": "*"
     "@types/range-parser": "*"
   checksum: 009bfbe1070837454a1056aa710d0390ee5fb8c05dfe5a1691cc3e2ca88dc256f80e1ca27cb51a978681631d2f6431bfc9ec352ea46dd0c6eb183d0170bde5df
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:*":
+  version: 4.17.15
+  resolution: "@types/express@npm:4.17.15"
+  dependencies:
+    "@types/body-parser": "*"
+    "@types/express-serve-static-core": ^4.17.31
+    "@types/qs": "*"
+    "@types/serve-static": "*"
+  checksum: b4acd8a836d4f6409cdf79b12d6e660485249b62500cccd61e7997d2f520093edf77d7f8498ca79d64a112c6434b6de5ca48039b8fde2c881679eced7e96979b
   languageName: node
   linkType: hard
 
@@ -3609,10 +3643,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie-parser@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "cookie-parser@npm:1.4.6"
+  dependencies:
+    cookie: 0.4.1
+    cookie-signature: 1.0.6
+  checksum: 1e5a63aa82e8eb4e02d2977c6902983dee87b02e87ec5ec43ac3cb1e72da354003716570cd5190c0ad9e8a454c9d3237f4ad6e2f16d0902205a96a1c72b77ba5
+  languageName: node
+  linkType: hard
+
 "cookie-signature@npm:1.0.6":
   version: 1.0.6
   resolution: "cookie-signature@npm:1.0.6"
   checksum: f4e1b0a98a27a0e6e66fd7ea4e4e9d8e038f624058371bf4499cfcd8f3980be9a121486995202ba3fca74fbed93a407d6d54d43a43f96fd28d0bd7a06761591a
+  languageName: node
+  linkType: hard
+
+"cookie@npm:0.4.1":
+  version: 0.4.1
+  resolution: "cookie@npm:0.4.1"
+  checksum: bd7c47f5d94ab70ccdfe8210cde7d725880d2fcda06d8e375afbdd82de0c8d3b73541996e9ce57d35f67f672c4ee6d60208adec06b3c5fc94cebb85196084cf8
   languageName: node
   linkType: hard
 
@@ -3701,7 +3752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
+"debug@npm:4, debug@npm:4.x, debug@npm:^4.1.0, debug@npm:^4.1.1, debug@npm:^4.3.2, debug@npm:^4.3.3, debug@npm:^4.3.4":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -5834,6 +5885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kareem@npm:2.5.0":
+  version: 2.5.0
+  resolution: "kareem@npm:2.5.0"
+  checksum: 292e80b32fb44e1801c5eb25b150e4b42e6ddf8a9c38ac67f99d4e7164dc7d9e874ea9b6ffaa42d6c3e76c8dd28ae5723643f3b5c8cb5c481af07118ce1475e3
+  languageName: node
+  linkType: hard
+
 "kleur@npm:^3.0.3":
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
@@ -6229,6 +6287,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mongodb@npm:4.12.1":
+  version: 4.12.1
+  resolution: "mongodb@npm:4.12.1"
+  dependencies:
+    "@aws-sdk/credential-providers": ^3.186.0
+    bson: ^4.7.0
+    mongodb-connection-string-url: ^2.5.4
+    saslprep: ^1.0.3
+    socks: ^2.7.1
+  dependenciesMeta:
+    "@aws-sdk/credential-providers":
+      optional: true
+    saslprep:
+      optional: true
+  checksum: 84590484b2c93bce849ec1e334b064e983444ed73942061c91e09556348c80db9d4a40544b927cd795bdfbfc51d1b713a7df5ced4ecf13cd00fab5e3c3e32ada
+  languageName: node
+  linkType: hard
+
 "mongodb@npm:^4.12.0":
   version: 4.12.0
   resolution: "mongodb@npm:4.12.0"
@@ -6244,6 +6320,37 @@ __metadata:
     saslprep:
       optional: true
   checksum: 002a92eecfeb160d07aa83f8f9e4fa33a06816635606a85312713150eba41cb17abf92b785ca1ecc7c8de40519ef119d372896f2a1cd4902f92447d26a80b000
+  languageName: node
+  linkType: hard
+
+"mongoose@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "mongoose@npm:6.8.0"
+  dependencies:
+    bson: ^4.7.0
+    kareem: 2.5.0
+    mongodb: 4.12.1
+    mpath: 0.9.0
+    mquery: 4.0.3
+    ms: 2.1.3
+    sift: 16.0.1
+  checksum: 565fbf795cfe9b753fc4cf7787c2d3804cefb3a203705b25d41f7c67d628f96dfc644560a69d97ec0546a279339a703de72d011f5ac82b1369ba73972d5b581f
+  languageName: node
+  linkType: hard
+
+"mpath@npm:0.9.0":
+  version: 0.9.0
+  resolution: "mpath@npm:0.9.0"
+  checksum: 1052f1f926db04502440f76164ae16ed53aa41f3ce34e7e64e3ed451b7d91ede295c3b600801c5f9eb862f03d9d59b7aa5aaf690c341fc521bef025d0f5cd773
+  languageName: node
+  linkType: hard
+
+"mquery@npm:4.0.3":
+  version: 4.0.3
+  resolution: "mquery@npm:4.0.3"
+  dependencies:
+    debug: 4.x
+  checksum: 16a6887ba7594e71d38969ab58c7be1866a0ffa07a559e4bb43eaefd00db2ae174aedbe2187d94f2a86dca1e07e024d03c22c39fdea09bf08dbf586a2f7ecb0c
   languageName: node
   linkType: hard
 
@@ -6337,11 +6444,13 @@ __metadata:
     "@nestjs/common": ^9.0.0
     "@nestjs/config": ^2.2.0
     "@nestjs/core": ^9.0.0
+    "@nestjs/mongoose": ^9.2.1
     "@nestjs/platform-express": ^9.0.0
     "@nestjs/schematics": ^9.0.0
     "@nestjs/testing": ^9.0.0
     "@nestjs/typeorm": ^9.0.1
     "@types/bcrypt": ^5.0.0
+    "@types/cookie-parser": ^1.4.3
     "@types/express": ^4.17.13
     "@types/jest": 28.1.8
     "@types/node": ^16.0.0
@@ -6350,6 +6459,7 @@ __metadata:
     "@typescript-eslint/parser": ^5.0.0
     aws-sdk: ^2.1238.0
     bcrypt: ^5.1.0
+    cookie-parser: ^1.4.6
     crypto: ^1.0.1
     dotenv: ^16.0.3
     eslint: ^8.0.1
@@ -6357,6 +6467,7 @@ __metadata:
     eslint-plugin-prettier: ^4.0.0
     jest: 28.1.3
     mongodb: ^4.12.0
+    mongoose: ^6.8.0
     prettier: ^2.3.2
     reflect-metadata: ^0.1.13
     rimraf: ^3.0.2
@@ -7339,6 +7450,13 @@ __metadata:
     get-intrinsic: ^1.0.2
     object-inspect: ^1.9.0
   checksum: 351e41b947079c10bd0858364f32bb3a7379514c399edb64ab3dce683933483fc63fb5e4efe0a15a2e8a7e3c436b6a91736ddb8d8c6591b0460a24bb4a1ee245
+  languageName: node
+  linkType: hard
+
+"sift@npm:16.0.1":
+  version: 16.0.1
+  resolution: "sift@npm:16.0.1"
+  checksum: 5fe18a517a20c35e0c05238797cc605094a6cb602b08c4661268c415b71a10f1a55ee4cc8728552e390e7cb4683a33bcbd68d7971eb44645cc6211e2f00dd233
   languageName: node
   linkType: hard
 
