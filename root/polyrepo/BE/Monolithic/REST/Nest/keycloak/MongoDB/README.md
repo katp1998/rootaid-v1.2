@@ -2,17 +2,17 @@
 
 ### mongoDB
 
-- yarn add typeorm
-- yarn add @nestjs/typeorm
-- yarn add mongodb
+- yarn add @nestjs/mongoose
+- yarn add mongoose
 
 ### keycloak
 
-- npm install nest-keycloak-connect –save
-- npm i --save @nestjs/axios
-- npm i qs
-- npm i --save @nestjs/config
-- npm i keycloak-connect
+- yarn add nest-keycloak-connect
+- yarn add @nestjs/axios
+- yarn add qs
+- yarn add @nestjs/config
+- yarn add keycloak-connect
+- yarn add cookie-parser
 
 ## Environment Variables
 
