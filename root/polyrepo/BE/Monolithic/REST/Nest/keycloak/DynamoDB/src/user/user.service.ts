@@ -59,11 +59,7 @@ export class UserService {
 
                 const newUser = await User.create({ "userid": uuid(), "name": username, "email": email, "password": password });
     
-                throw new HttpException({
-                    status: HttpStatus.CREATED,
-                    message: 'Sucessfully created',
-                    user:newUser
-                  }, HttpStatus.CREATED)
+                return { message: "created" };   
                 
             }
 
@@ -95,31 +91,87 @@ export class UserService {
                         username: username,
                         password: password
                     })
-            
                 });
-             data = response.data;
-            }
-            catch (error)
-            {
-                throw new HttpException({
-                    status: HttpStatus.UNAUTHORIZED,
-                    message: "Unauthorized",
-                    user:null,
-                    access_token:null
-                }, HttpStatus.UNAUTHORIZED);
-            }
+            data = response.data;
+        }
+        catch (error)
+        {
+                console.log(error);
+                return null;
+        }
             
-            const user = await this.findUserByUsername(username);
-            
-            throw new HttpException({
-                status: HttpStatus.OK,
-                message: 'Sucessfully Logged In',
-                user: user[0],
-                access_token: data.access_token,
-          }, HttpStatus.OK);
+        const user = await this.findUserByUsername(username);
         
+        // save refresh token
+        await User.update({userid:user[0].userid, refreshToken:data.refresh_token});
+
+        return {
+            user: user,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token
+        };
     }
 
+
+    //logout user
+
+    async logoutUser(refreshToken: string) {
+        try{
+        const response = await this.httpService.axiosRef(
+            {
+                method: 'post',
+                url: `${process.env.AUTH_SEVER_URL}realms/master/protocol/openid-connect/logout`,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                    Authorization: `Bearer ${refreshToken}`
+                }
+            }
+        );
+            const existingUser = await User.scan("refreshToken").contains(refreshToken).exec();
+
+            // remove refresh token from db
+            await User.update({userid:existingUser[0].userid, refreshToken:''});
+
+            return 'Logout sucessfully';
+        }
+        catch (error)
+        {
+            throw new HttpException({
+                status: HttpStatus.NOT_ACCEPTABLE,
+                message: 'User not validate'
+            }, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+      // verify refresh token
+
+    async verifyRefreshToken(refreshToken: string) {
+        try {
+            const response = await this.httpService.axiosRef(
+                {
+                    method: 'post',
+                    url: `${process.env.AUTH_SEVER_URL}realms/${process.env.REALM}/protocol/openid-connect/token`,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                    data: stringify({
+                        client_id: process.env.CLIENT_ID,
+                        grant_type: 'refresh_token',
+                        client_secret: process.env.SECRET_ID,
+                        refresh_token: refreshToken
+                    })
+            
+                });
+    
+            return response.data;
+        }
+        catch (error)
+        {
+            console.log(error);
+            return 'Refresh token not accepted';
+        }    
+    }
+    
+    
     //public token
 
     async genarateUserToken() {

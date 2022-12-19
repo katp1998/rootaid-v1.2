@@ -4,6 +4,8 @@
 - yarn add express-session
 - yarn add @types/express-session
 - yarn add qs
+- yarn add cookie-parser
+  -yarn add --dev @types/cookie-parser
 
 ## Environment Variables
 
