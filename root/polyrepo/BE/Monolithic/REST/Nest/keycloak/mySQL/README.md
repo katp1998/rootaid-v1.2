@@ -13,6 +13,8 @@
 - yarn add qs
 - yarn add @nestjs/config
 - yarn add keycloak-connect
+- yarn add cookie-parser
+- yarn add @types/cookie-parser
 
 ## Environment Variables
 
