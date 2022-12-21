@@ -41,11 +41,11 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     email: ${email},
     message: ${dbResponse}`);
 
-    // const cognitoResponse = await this.cognitoService.signUp(params).promise();
-    // console.log(`Created cognito user:
-    // username: ${username},
-    // email: ${email},
-    // message: ${cognitoResponse.$response}`);
+    const cognitoResponse = await this.cognitoService.signUp(params).promise();
+    console.log(`Created cognito user:
+    username: ${username},
+    email: ${email},
+    message: ${cognitoResponse.$response}`);
   } catch (error) {
     console.log(`Error occurred: ${error}`);
   };
