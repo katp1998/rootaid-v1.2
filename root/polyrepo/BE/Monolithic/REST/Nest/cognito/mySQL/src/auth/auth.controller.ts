@@ -9,34 +9,44 @@ export class AuthController {
 
     @Post('register')
     async handleRegister(@Body() dto: RegisterDto) {
+        //destructure data from DTO
         const {username, password, email} = dto
 
+        //create user attributes array and pass email as key => value pair
         let userAttr = []
         userAttr.push({Name: 'email', Value: email})
 
+        //call service method for registering a user
         return await this.authService.registerUser(username, password, userAttr)
     }
 
     @Post('login')
     async handleLogin(@Body() dto: LoginDto,  @Res({ passthrough: true }) response: Response) {
+        //destructure data from DTO
         const {username, password} = dto
 
+        //get refresh token returned from loginUser service method, and attach it to response as a cookie
         const result = await this.authService.loginUser(username, password)
         response.cookie('jwt', result, {httpOnly:true, sameSite:'none', maxAge:24*60*60*1000})
-        return result
+
+        return `Login successful, attached refresh token as a cookie\!
+        username: ${username}
+        refresh token: ${result}
+        `
     }
 
     @Get('refreshtoken')
     async handleRefreshToken(@Req() request: Request) {
         const cookies = request.cookies
-        console.log(cookies)
+
         if(!cookies?.jwt) throw new HttpException('Message', HttpStatus.NO_CONTENT);;
         const refreshToken = cookies.jwt as string
-        console.log(`Refresh token endpoint result:
-            $
-        `)
 
-        return await this.authService.verifyRefreshToken(refreshToken)
+        try {
+            return await this.authService.verifyRefreshToken(refreshToken)
+        } catch (error) {
+            return error
+        }
     }
 
     @Post('logout')
