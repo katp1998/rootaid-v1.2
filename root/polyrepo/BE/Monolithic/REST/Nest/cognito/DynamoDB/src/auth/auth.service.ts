@@ -40,7 +40,6 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     const hashedPassword: string  = await hashPassword(password)
 
     const cognitoResponse = await this.cognitoService.signUp(params).promise();
-    this.cognitoService.globalSignOut
     console.log(`Created cognito user:
     username: ${username},
     email: ${email},
@@ -84,7 +83,6 @@ async loginUser(username:string, password:string) {
 }
 
 async verifyRefreshToken(refreshToken:string) {
-  
   try {
     const existingUser = await findUserByToken(refreshToken)
     const params = {
@@ -121,7 +119,6 @@ async logoutUser(refreshToken: string) {
   } catch (error) {
     console.log(error)
   }
-  
 }
 
 }
