@@ -30,6 +30,8 @@ export const findUserByToken = async (refreshToken : any) => {
     }
 } 
 
+  //@desc FIND USER BY USERNAME
+  //@route POST /api/v1.2/auth/findUser
 export const  findUser = async (username : string)=>{
         try {
             const existingUser = await User.scan("username").contains(username).exec()

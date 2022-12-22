@@ -4,18 +4,18 @@ import cors from 'cors';
 
 import bodyparser from 'body-parser'
 import cookieParser from 'cookie-parser'
-import { connection } from './database/connection';
+import { setDdb } from './database/client';
 
 import  userRouter from './api/routes/userRoutes'
 
 import config from './config/index'
 import { corsOptions } from './config/corsOptions';
-import { credentials } from './api/middlewares/credentials';
+// import { credentials } from './api/middlewares/credentials';
 const app : Express = express()
 
-connection()
+setDdb()
 
-app.use(credentials)
+// app.use(credentials)
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use((bodyparser.urlencoded({ extended: true })))

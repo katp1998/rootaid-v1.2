@@ -2,14 +2,14 @@ import AWS from 'aws-sdk'
 import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../config'
-import  {findUser, createUser, findUserById, findUserByToken , saveRefreshToken, removeRefreshToken} from '../database/repository/user.repository'
+import  {findUser, createUser, findUserByToken , saveRefreshToken, removeRefreshToken} from '../database/repository/user.repository'
 import { hashPassword, validatePassword } from '../utils/index'
 
 export interface RegisterInputs {
     username: string,
     password: string,
     userAttr: Array<any>,
-    refreshToken: string
+    refreshToken?: string
   }
   
 export interface LoginInputs {    
@@ -107,7 +107,7 @@ export const verifyRefreshToken = async (refreshToken: string) => {
             }
         }
         const data = await cognitoService.initiateAuth(params).promise()
-        return data
+        return data.AuthenticationResult.AccessToken 
   } catch (error) {
         console.log(error);
         return 'Refresh token not accepted'

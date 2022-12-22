@@ -9,6 +9,6 @@ export default {
     region: process.env.AWS_REGION,
     cognitoClientId: process.env.COGNITO_CLIENT_ID,
     cognitoSecret: process.env.COGNITO_SECRET_KEY,
-    ddbClientId : process.env.DDB_CLIENT_ID,
+    ddbAccessKey : process.env.DDB_ACCESS_KEY_ID,
     ddbSecret : process.env.DDB_SECRET_KEY,
 }

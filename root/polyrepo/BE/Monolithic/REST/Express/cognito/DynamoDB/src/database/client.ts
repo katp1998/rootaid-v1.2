@@ -1,15 +1,17 @@
 import * as dynamoose from "dynamoose";
-import * as dotenv from 'dotenv'
-dotenv.config()
+import config from '../config'
 
 // Create new DynamoDB instance
 const ddb = new dynamoose.aws.ddb.DynamoDB({
     credentials: {
-      secretAccessKey: process.env.DYNAMODB_SECRET_ACCESS_KEY,
-      accessKeyId: process.env.DYNAMODB_ACCESS_KEY,
+      secretAccessKey: config.ddbSecret,
+      accessKeyId: config.ddbAccessKey,
     },
-    region: process.env.REGION
+    region: process.env.AWS_REGION
 });
 
 // Set DynamoDB instance to the Dynamoose DDB instance
-dynamoose.aws.ddb.set(ddb);
+export const setDdb = () => {
+  dynamoose.aws.ddb.set(ddb);
+}
+
