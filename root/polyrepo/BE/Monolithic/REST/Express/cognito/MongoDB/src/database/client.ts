@@ -1,17 +1,16 @@
-import * as dynamoose from "dynamoose";
-import config from '../config'
+import { createConnection } from 'typeorm';
+import { User } from './models/user.model';
+import dotenv from 'dotenv';
 
-// Create new DynamoDB instance
-const ddb = new dynamoose.aws.ddb.DynamoDB({
-    credentials: {
-      secretAccessKey: config.ddbSecret,
-      accessKeyId: config.ddbAccessKey,
-    },
-    region: process.env.AWS_REGION
-});
+dotenv.config();
 
-// Set DynamoDB instance to the Dynamoose DDB instance
-export const setDdb = () => {
-  dynamoose.aws.ddb.set(ddb);
-}
-
+export const connection = () => {createConnection({
+  type:'mongodb',
+  url: process.env.MONGO_URI,
+  useNewUrlParser:true,
+  useUnifiedTopology:true,
+  logging: true,
+  synchronize: true,
+  entities: [User],
+  
+})};

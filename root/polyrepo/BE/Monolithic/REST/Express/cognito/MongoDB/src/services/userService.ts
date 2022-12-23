@@ -57,7 +57,7 @@ export const registerUser = async (userInputs: RegisterInputs) => {
         message: ${cognitoResponse.$response.data}`);
 
 
-        const user = await createUser({id, username, password: hashedPassword, email,})
+        const user = await createUser({username, password: hashedPassword, email,})
         console.log(user);
 
         return cognitoResponse

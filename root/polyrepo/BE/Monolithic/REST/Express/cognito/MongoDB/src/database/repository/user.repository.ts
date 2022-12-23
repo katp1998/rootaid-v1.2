@@ -1,68 +1,90 @@
-import { User } from '../models/user.schema';
-  
-  //@desc CREATE USER
-  //@route POST /api/v1.2/auth/createUser
-  export const createUser = async ({id, username, email, password}: {id: string, username: string, email: string, password: string}) => { //types to be tested in integration between service and controller files
-      try {
 
-        const user = await User.create({id, username, email, password});
-        return user
+//koa was not used in this process
+import { User } from "../models/user.model";
 
-      } catch (error) {
-        console.log(error)
-        return error
-      }
+//@DESC: FIND IF USER EXISTS
+//@ROUTE: POST
+export const findUser = async (email: string) => {
+  const existingUser = await User.findOneBy({ email });
+  return existingUser;
+};
 
-}
-
-  //@desc FIND USER BY TOKEN
-  //@route POST /api/v1.2/auth/findUserByToken
-export const findUserByToken = async (refreshToken : any) => {
+//@desc CREATING USER
+//@route POST
+export const createUser = async ({
+  username,
+  email,
+  password,
+}: {
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  const existingUser = await User.findOneBy({ email });
+  if (!existingUser) {
     try {
-        const scanUser = await User.scan("refreshToken").contains(refreshToken).exec()
-        const existingUser = {
-          id: scanUser[0].id,
-          username: scanUser[0].username,
-        }
-        return existingUser
+      //CREATE USER:
+      const user = await User.save({
+        username,
+        email,
+        password,
+      });
+      return user;
     } catch (error) {
-        console.log(error)
+      return error;
     }
-} 
+  } else {
+    return { message: "user exists" };
+  }
+};
 
-  //@desc FIND USER BY USERNAME
-  //@route POST /api/v1.2/auth/findUser
-export const  findUser = async (username : string)=>{
-        try {
-            const existingUser = await User.scan("username").contains(username).exec()
-            return existingUser
-        } catch (error) {
-            console.log(error)
-        }
-}
+//@desc FIND USER BY TOKEN
+//@route POST
+export const findUserByToken = async (RefreshToken: string) => {
+  try {
+    const existingUser = await User.findOneBy({ refreshToken: RefreshToken });
+    return existingUser;
+  } catch (error) {}
+};
 
-  //@desc SAVE REFRESH TOKEN
-  //@route POST /api/v1.2/auth/saveRefreshToken
-export const saveRefreshToken =async (userID: string , refreshToken :string) => {
-    
-    const updatedUser = await User.update({id: userID, refreshToken})
+//@desc SAVING REFRESH TOKEN
+//@route POST
+export const saveRefreshToken = async (
+  userID: string,
+  RefreshToken: string
+) => {
+  //finding the user according to ID and update:
+  await User.createQueryBuilder()
+    .update(User)
+    .set({ refreshToken: RefreshToken })
+    .where("_id = :_id", { _id: userID })
+    .execute();
+};
 
-     console.log(updatedUser)
-    
+//@desc FINDING USER BY ID
+//@route POST
+export const findUserById = async (id: string) => {
+  try {
+    const existingUser = await User.createQueryBuilder("user")
+      .where("_id = :_id", { _id: id })
+      .select(["user.password", "user.refreshToken"]);
+    console.log(existingUser);
+  } catch (error) {
+    return {
+      error: "error",
+    };
+  }
+};
 
-}
-
-  //@desc REMOVE REFRESH TOKEN
-  //@route POST /api/v1.2/auth/removeRefreshToken
-export const removeRefreshToken = async (refreshToken : string) => {
-    try {
-        const userId = await (await findUserByToken(refreshToken)).id  
-        
-        const updatedUser = await User.update({id: userId, refreshToken: ''})  
-        
-        console.log(updatedUser)
-
-    } catch (error) {
-        console.log(error)
+//@desc REMOVING REFRESH TOKEN
+//@route POST
+export const removeRefreshToken = async (RefreshToken: string) => {
+  try {
+    const user = await findUserByToken(RefreshToken);
+    if (user) {
+      user.refreshToken = "";
+      const result = await user.save();
+      console.log(result);
     }
-}
+  } catch (error) {}
+};

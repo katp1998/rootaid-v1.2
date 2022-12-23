@@ -1,10 +1,10 @@
 
 import express , { Express ,Request , Response } from 'express';
 import cors from 'cors';
-
+import reflectMetaData from 'reflect-metadata'
 import bodyparser from 'body-parser'
 import cookieParser from 'cookie-parser'
-import { setDdb } from './database/client';
+import { connection } from './database/client';
 
 import  userRouter from './api/routes/userRoutes'
 
@@ -13,7 +13,7 @@ import { corsOptions } from './config/corsOptions';
 // import { credentials } from './api/middlewares/credentials';
 const app : Express = express()
 
-setDdb()
+connection()
 
 // app.use(credentials)
 app.use(cors(corsOptions))
