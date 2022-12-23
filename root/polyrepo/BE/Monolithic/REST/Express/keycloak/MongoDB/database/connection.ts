@@ -1,12 +1,15 @@
-import { createConnection } from 'typeorm';
-import { User } from './models/user.models';
+import mongoose, { ConnectOptions } from 'mongoose'
+import config from '../config'
 
-export const connection = createConnection({
-  type:'mongodb',
-  url: process.env.MONGO_URI,
-  useNewUrlParser:true,
-  useUnifiedTopology:true,
-  logging: true,
-  synchronize: true,
-  entities: [User],
-});
+
+
+export default ()=>{
+    mongoose.connect(`${config.dbURL}`, {
+        useNewUrlParser: true
+      } as ConnectOptions)
+    console.log('Db Connected');
+      
+      mongoose.connection.on("error", (e) => {
+        console.error(`Error ${e}`);
+      });
+}
