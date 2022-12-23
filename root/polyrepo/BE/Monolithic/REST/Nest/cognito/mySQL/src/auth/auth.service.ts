@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
-import { createUser } from '../database/repository/user.repository';
+import { createUser, saveRefreshToken, findUser, findUserByToken, removeRefreshToken } from '../database/repository/user.repository';
 import { hashPassword } from '../utils/hashPassword';
 
 @Injectable()
@@ -35,7 +35,7 @@ async registerUser(username:string, password:string, userAttr:Array<any>) {
     try {
     const email: string = userAttr[0].Value;
     const hashedPassword: string  = await hashPassword(password)
-    const dbResponse = await createUser({name: username, email , password: hashedPassword});
+    const dbResponse = await createUser({username, email , password: hashedPassword});
     console.log(`Created database entry: 
     username: ${username},
     email: ${email},
@@ -65,10 +65,59 @@ async loginUser(username:string, password:string) {
 
   try {
     const data = await this.cognitoService.initiateAuth(params).promise()
-    return data
+    const refreshToken = data.AuthenticationResult.RefreshToken as string
+
+    const existingUser = await findUser(username)
+    console.log(existingUser._id)
+    await saveRefreshToken(existingUser._id, refreshToken)
+
+    return refreshToken
   } catch (error) {
     console.log(error);
     return 'Login unsuccessful'
   }
 }
+
+async verifyRefreshToken(refreshToken:string) {
+  
+  try {
+    const existingUser = await findUserByToken(refreshToken)
+    console.log(existingUser)
+    const params = {
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      ClientId: this.clientId,
+      AuthParameters: {
+        'REFRESH_TOKEN': refreshToken,
+        "SECRET_HASH": this.generateHash(existingUser.username)
+      }
+    }
+    const data = await this.cognitoService.initiateAuth(params).promise()
+    return data
+  } catch (error) {
+    console.log(error);
+    return 'Refresh token not accepted'
+  }
+}
+
+async logoutUser(refreshToken: string) {
+  try {
+
+    const getAccessToken = await this.verifyRefreshToken(refreshToken)
+
+    //Removes refresh token from Dynamodb
+    await removeRefreshToken(refreshToken)
+
+    const params = {
+    AccessToken: getAccessToken as string,
+    }
+
+    const cognitoResult = await this.cognitoService.globalSignOut(params)
+    console.log("Successful logout")
+    return cognitoResult
+  } catch (error) {
+    console.log(error)
+  }
+  
+}
+
 }
