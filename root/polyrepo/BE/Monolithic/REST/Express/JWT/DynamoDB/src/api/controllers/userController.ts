@@ -51,7 +51,6 @@ export const refreshToken = async (req : Request, res : Response ) =>{
     const cookies = req.cookies;
     if(!cookies?.jwt) return res.sendStatus(204);
     const refreshToken = cookies.jwt as string
-    console.log("Refresh Token Endpoint", refreshToken)
     
 
     const findUser = await  userFind(refreshToken)// servcies to find user using refresh token 
@@ -62,7 +61,7 @@ export const refreshToken = async (req : Request, res : Response ) =>{
         `${config.refreshTokenKey}`,
         async (err:any,decoded:any) =>{
             if(err || findUser.name !== decoded.name) return res.sendStatus(403);
-            const accessToken = await  generateToken({email:findUser.email , _id: findUser._id})
+            const accessToken = await  generateToken({name:findUser.name , id: findUser.id})
             res.json({accessToken})        
         }
     )

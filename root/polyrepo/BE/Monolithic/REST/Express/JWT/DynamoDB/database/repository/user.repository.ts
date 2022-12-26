@@ -2,10 +2,10 @@ import { User } from '../models/user.model';
   
   //@desc CREATING USER
   //@route POST /api/v1.2/auth/create
-  export const createUser = async ({name, email, password}: { name: string, email: string, password: string}) => { //types to be tested in integration between service and controller files
+  export const createUser = async ({id,name, email, password}: {id: string, name: string, email: string, password: string}) => { //types to be tested in integration between service and controller files
       try {
 
-        const user = await User.create({ name, email, password});
+        const user = await User.create({id, name, email, password});
         return user
 
       } catch (error) {
@@ -18,9 +18,10 @@ import { User } from '../models/user.model';
 export const findUserByToken = async (refreshToken : any) => {
     try {
         const scanUser = await User.scan("refreshToken").contains(refreshToken).exec()
+        
         const existingUser = {
           id: scanUser[0].id,
-          username: scanUser[0].username,
+          name: scanUser[0].name,
         }
         return existingUser
     } catch (error) {
@@ -30,8 +31,7 @@ export const findUserByToken = async (refreshToken : any) => {
 
  export const  findUser = async (email : string)=>{
         try {
-            const existingUser = await User.scan("email").contains(email).exec() 
-            console.log(existingUser)
+            const existingUser = await User.scan("email").contains(email).exec()    
             return existingUser
         } catch (error) {
             console.log(error)
@@ -39,10 +39,13 @@ export const findUserByToken = async (refreshToken : any) => {
 }
 
 export const saveRefreshToken =async (userID: string , refreshToken :string) => {
-    
-    const updatedUser = await User.update({id: userID, refreshToken})
+    try {
+        const updatedUser = await User.update({id: userID, refreshToken})
+        
+    } catch (error) {
+        return error 
+    }
 
-     console.log(updatedUser)
     
 
 }
@@ -54,9 +57,19 @@ export const removeRefreshToken = async (refreshToken : string) => {
         
         const updatedUser = await User.update({id: id, refreshToken: ''})  
         
-        console.log(updatedUser)
 
     } catch (error) {
         console.log(error)
     }
+}    
+
+export const findUserById  =async (userID:string) => {
+    try {
+        const scanUser  = await User.scan("id").contains(userID).exec()
+        return scanUser[0]
+    } catch (error) {
+        console.log(error)
+    }
 }
+
+

@@ -1,4 +1,4 @@
-import  {findUser,createUser, /*findUserById*/ findUserByToken , saveRefreshToken, removeRefreshToken} from '../../database/repository/user.repository'
+import  {findUser,createUser, findUserById ,findUserByToken , saveRefreshToken, removeRefreshToken} from '../../database/repository/user.repository'
 import { v4 as uuidv4 } from 'uuid';
 import { generatePassword, generateRefreshToken, generateToken, validatePassword } from '../utils/index'
 
@@ -15,10 +15,10 @@ export interface RegisterInputs {
 
 export const signUp = async (userInputs: RegisterInputs) => {
     const { name,email, password} = userInputs
-
+    const id = uuidv4()
     try {
         
-         const checkExistingUser = await findUser(email)
+         const checkExistingUser :any = await findUser(email)
       
 
         if(!checkExistingUser[0]){ 
@@ -26,15 +26,15 @@ export const signUp = async (userInputs: RegisterInputs) => {
             
             let hashedPassword = await generatePassword(password)
 
-            const newUser : any = await createUser({name,email,password:hashedPassword})
+            const newUser : any = await createUser({id,name,email,password:hashedPassword})
             
-            const accessToken = await generateToken({email: newUser.email, _id: newUser._id})
+            const accessToken = await generateToken({email: newUser.email, id: newUser.id})
 
             const refreshToken = await generateRefreshToken({name: newUser.name})
 
-            await saveRefreshToken(newUser._id,refreshToken,)
-
-            return {id:newUser._id, accessToken,name:newUser.name,refreshToken}
+            await saveRefreshToken(newUser.id,refreshToken)
+            
+            return {id:newUser.id, accessToken,name:newUser.name,refreshToken}
 
         } else {
             throw new Error("Email Already Registered")
@@ -50,20 +50,20 @@ export const logIn = async (userInputs : LoginInputs) =>{
     const {email,password} = userInputs
 
     try {
-        const existingUser = await findUser(email)
+        const existingUser :any = await findUser(email)
 
-        if (existingUser) {
+        if (existingUser[0]) {
             
             const  validatedPassword = await validatePassword(password, existingUser[0].password)
             
 
             if(validatedPassword){
-                    const accessToken = await generateToken({email : existingUser[0].email, _id:existingUser[0]._id})   
+                    const accessToken = await generateToken({email : existingUser[0].email, id:existingUser[0].id})   
                     const refreshToken = await generateRefreshToken({name:existingUser[0].name})
 
-                    await saveRefreshToken(existingUser[0]._id,refreshToken)
+                    await saveRefreshToken(existingUser[0].id,refreshToken)
 
-                    return {id: existingUser[0]._id,name:existingUser[0].name,  accessToken,refreshToken }
+                    return {id: existingUser[0].id,name:existingUser[0].name,  accessToken,refreshToken }
             }else {
                 throw new Error("Incorrect Password")
             }
@@ -83,19 +83,19 @@ export const logout =async (refreshToken : string) => {
 
 export const userFind = async (refreshToken:string) => {
     try {
-        const user = await findUserByToken(refreshToken)
+        const user  = await findUserByToken(refreshToken)
         return user
     } catch (error:any) {
         throw new Error(error.message)
     }
 }
 
-// export const userFindByID = async (userID : string) => {
-//     try {
-//         const user = await findUserById(userID)
-//         return user
-//     } catch (error:any) {
-//         throw new Error(error.message)
-//     }
-// }    
+export const userFindByID = async (userID : string) => {
+    try {
+        const user = await findUserById(userID)
+        return user
+    } catch (error:any) {
+        throw new Error(error.message)
+    }
+}    
 
