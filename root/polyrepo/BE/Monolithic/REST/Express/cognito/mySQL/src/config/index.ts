@@ -10,7 +10,6 @@ export default {
     dbHost: process.env.DB_HOST,
     dbUsername: process.env.DB_USERNAME,
     dbPassword: process.env.DB_PASSWORD,
-    dbPort: process.env.DB_PORT,
     region: process.env.AWS_REGION,
     cognitoClientId: process.env.COGNITO_CLIENT_ID,
     cognitoSecret: process.env.COGNITO_SECRET_KEY,

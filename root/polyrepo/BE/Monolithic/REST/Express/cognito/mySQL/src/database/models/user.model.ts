@@ -3,7 +3,7 @@ import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-    _id!: number;
+    _id!: string;
 
   @Column()
     username!: string;
@@ -14,6 +14,6 @@ export class User extends BaseEntity {
   @Column()
     password!: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'longtext' })
     refreshToken!: string;
   }

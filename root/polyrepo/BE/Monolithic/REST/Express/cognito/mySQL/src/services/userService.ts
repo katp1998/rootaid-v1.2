@@ -85,8 +85,8 @@ export const loginUser = async (userInputs : LoginInputs) =>{
         const refreshToken = data.AuthenticationResult.RefreshToken as string
 
         const existingUser = await findUser(username)
-        console.log(existingUser[0].id)
-        await saveRefreshToken(existingUser[0].id, refreshToken)
+        console.log(existingUser._id)
+        await saveRefreshToken(existingUser._id, refreshToken)
 
         return refreshToken
     } catch (error) {

@@ -6,6 +6,7 @@ import { User } from "../models/user.model";
 //@ROUTE: POST
 export const findUser = async (username: string) => {
   const existingUser = await User.findOneBy({ username });
+  console.log(existingUser)
   return existingUser;
 };
 
@@ -43,6 +44,7 @@ export const createUser = async ({
 export const findUserByToken = async (RefreshToken: string) => {
   try {
     const existingUser = await User.findOneBy({ refreshToken: RefreshToken });
+    console.log(existingUser)
     return existingUser;
   } catch (error) {}
 };
