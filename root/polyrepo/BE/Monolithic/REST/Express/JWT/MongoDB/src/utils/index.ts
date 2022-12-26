@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Request } from 'express';
-import config from '../config/index';
+import config from '../../config';
  
 
 
@@ -15,11 +15,11 @@ export const validatePassword = async (enteredPassword : any, savedPassword : an
 };
 
 export const generateToken = async (payload : any) => {
-        return await jwt.sign(payload,`${config.accessTokenKey}` , { expiresIn: '10s'} )
+        return await jwt.sign(payload,`${config.accessTokenKey}` , { expiresIn: '1d'} )
 }
 
 export const generateRefreshToken = async (payload : any) =>{
-        return await jwt.sign(payload, "refreshkeysecret", {expiresIn :'2d'} )
+        return await jwt.sign(payload, `${config.refreshTokenKey}`, {expiresIn :'2d'} )
 }
 
 

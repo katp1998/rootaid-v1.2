@@ -1,6 +1,6 @@
 import jwt, {JwtPayload} from 'jsonwebtoken'
 import { Request , Response , NextFunction } from 'express'
-import {userFind} from '../../services/user.service'
+//import {userFindByID} from '../../services/userService'
 
 import config from '../../../config'
 
@@ -20,14 +20,16 @@ export const auth = async (req : Request , res : Response , next : NextFunction)
     }
 
     try {
-        const user = await <any>jwt.verify(token , `${config.accessTokenKey}`);
-
-        (req as CustomRequest).user  =  await userFind(user._id);
-
+        // const user = await <any>jwt.verify(token , `${config.accessTokenKey}`);
+        // const userFind = await userFindByID(user._id);
+        
+        // (req as CustomRequest).user  =  await userFindByID(user._id);
+        
+        // //console.log(user._id)
         next()
 
     } catch (error) {
-        res.status(500).json({
+        res.status(403).json({
             error : error
         })
     }
