@@ -4,8 +4,8 @@ import { User } from "../models/user.model";
 
 //@DESC: FIND IF USER EXISTS
 //@ROUTE: POST
-export const findUser = async (email: string) => {
-  const existingUser = await User.findOneBy({ email });
+export const findUser = async (username: string) => {
+  const existingUser = await User.findOneBy({ username });
   return existingUser;
 };
 
