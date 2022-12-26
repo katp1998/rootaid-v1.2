@@ -30,9 +30,9 @@ export class UserController {
     // Register user
     @Public()
     @Post('register')
-    createUser(@Body() userCreateDTO: userCreatedto)
+    registerUser(@Body() userCreateDTO: userCreatedto)
     {
-        return this.userService.createUser(userCreateDTO);
+        return this.userService.signUp(userCreateDTO);
     }
 
     // Login user
@@ -44,7 +44,7 @@ export class UserController {
         
         try {
 
-            result = await this.userService.loginUser(userCreateDTO);
+            result = await this.userService.logIn(userCreateDTO);
             console.log(result.refresh_token +'cookie');
             response.cookie('jwt', result.refresh_token, { httpOnly: true, sameSite: 'none', maxAge: 24 * 60 * 60 * 1000 });
         }
@@ -72,7 +72,7 @@ export class UserController {
     // refresh token
     @Public()
     @Get('refreshtoken')
-    async handleRefreshToken(@Req() request: Request) {
+    async refreshToken(@Req() request: Request) {
 
         const cookies = await request.cookies;
 
@@ -94,7 +94,7 @@ export class UserController {
     //logout
     @Public()
     @Get('logout')
-    async handleLogout(@Req() request: Request, @Res() response: Response) {
+    async logoutUser(@Req() request: Request, @Res() response: Response) {
         const cookies = request.cookies;
 
         if (!cookies?.jwt) 
@@ -108,7 +108,7 @@ export class UserController {
         }
 
         const refreshToken = cookies.jwt;
-        await this.userService.logoutUser(refreshToken);
+        await this.userService.logOut(refreshToken);
 
         // clear cookie
         response.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
