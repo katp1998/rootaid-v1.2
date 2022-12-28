@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 
-dotenv.config();
+
+import config from '../config'
  
 export const generatePassword = async (password : any) => {
-  return await bcrypt.hash(password, Number(process.env.SALT));
+  return await bcrypt.hash(password, Number(config.salt));
 };
 
 
@@ -14,11 +14,11 @@ export const validatePassword = async (enteredPassword : any, savedPassword : an
 };
 
 export const generateToken = async (payload : any) => {
-  return await jwt.sign(payload, `${process.env.ACCESS_TOKEN_SECRET_KEY}`, { expiresIn: '10m' } );
+  return await jwt.sign(payload, `${config.accessTokenKey}`, { expiresIn: '10m' } );
 };
 
 export const generateRefreshToken = async (payload : any) =>{
-  return await jwt.sign(payload, 'refreshkeysecret', { expiresIn :'2d' } );
+  return await jwt.sign(payload, `${config.refreshTokenKey}`, { expiresIn :'2d' } );
 };
 
 

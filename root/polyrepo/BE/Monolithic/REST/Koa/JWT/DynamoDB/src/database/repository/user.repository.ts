@@ -1,74 +1,75 @@
-
-import { Request, Response } from 'express';
-import bcrypt from 'bcrypt'
-import aws from "aws-sdk"
-
-//using documentclient method 
-const db = new aws.DynamoDB.DocumentClient()
-
-//creating a constant with the table name
-// export const User = process.env.TABLE_NAME
-
-//@DESC: FIND IF USER EXISTS
-//@ROUTE: POST /api/v1.2/auth/
-export const findUser =async (email:any) => {
-  //CHECK IF USER WITH SAME EMAIL ADDRESS EXISTS
-  const params ={
-    TableName: "rootaid-v1.2-test",
-    key: {
-      email
-    }
-  }
-  if(params){
-    return params
-  }
-}
+import { User } from '../models/user.model';
   
   //@desc CREATING USER
   //@route POST /api/v1.2/auth/create
-  export const createUser = async ({name, email, password}: any) => {
-    //CHECK IF USER EXISTS
-    const userExists = findUser({email})
-    
-    if(!userExists){
+  export const createUser = async ({id,name, email, password}: {id: string, name: string, email: string, password: string}) => { //types to be tested in integration between service and controller files
       try {
-        //GENERATE THE HASHED PASSWORD TO BE STORED IN THE DATABASE:
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password, salt)
-        
-        //CREATE USER:
-        const params = {
-          TableName: "rootaid-v1.2-test",
-          Item: {name, email, password: hashedPassword}
-      }
-        //RETURN SUCCESS RESPONSE
-        await db.put(params).promise()
-        return { success: true }
+
+        const user = await User.create({id, name, email, password});
+        return user
 
       } catch (error) {
         console.log(error)
-        //RETURN UNSUCCESSFUL RESPONSE
-        const response = {"status": "error", "messsage": "User creation unsuccessful"}
-        return response
+        return error
       }
-    }else{
-      const response = {"message": "User exists, please login"}
-      return response
-    }
 
 }
-  
-  //@desc LOGIN
-  //@route GET /api/v1.2/auth/login
-  export const loginUser = async ({email, password} : any) => {
-    //CHECK IF USER EXISTS
-    const userExists = findUser({email})
-    if(userExists){
-      
-    }
-    try {
-      
 
-    }catch(error){}
-  }
-  
+export const findUserByToken = async (refreshToken : any) => {
+    try {
+        const scanUser = await User.scan("refreshToken").contains(refreshToken).exec()
+        console.log(scanUser)
+        const existingUser = {
+          id: scanUser[0].id,
+          name: scanUser[0].name,
+        }
+        return existingUser
+    } catch (error) {
+        console.log(error)
+    }
+} 
+
+ export const  findUser = async (email : string)=>{
+        try {
+            const existingUser = await User.scan("email").contains(email).exec()    
+            return existingUser
+        } catch (error) {
+            console.log(error)
+        }   
+}
+
+export const saveRefreshToken =async (userID: string , refreshToken :string) => {
+    try {
+        const updatedUser = await User.update({id: userID, refreshToken})
+        
+    } catch (error) {
+        return error 
+    }
+
+    
+
+}
+
+export const removeRefreshToken = async (refreshToken : string) => {
+    try {
+        const user = await findUserByToken(refreshToken)
+        const id  = user?.id
+        
+        const updatedUser = await User.update({id: id, refreshToken: ''})  
+        
+
+    } catch (error) {
+        console.log(error)
+    }
+}    
+
+export const findUserById  =async (userID:string) => {
+    try {
+        const scanUser  = await User.scan("id").contains(userID).exec()
+        return scanUser[0]
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
