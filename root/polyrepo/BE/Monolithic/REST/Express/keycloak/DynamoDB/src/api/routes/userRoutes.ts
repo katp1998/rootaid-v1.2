@@ -1,6 +1,6 @@
 import { initKeycloak } from '../../../config/keycloak-config';
 import express, { Router } from 'express';
-import { registerUser, loginUser, protectedRoute } from '../controllers/userController';
+import { registerUser, loginUser, protectedRoute, logoutUser, refreshToken } from '../controllers/userController';
 
 const userRouter: Router = express.Router();
 
@@ -10,6 +10,8 @@ console.log("keycloak initaied");
 
 userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
+userRouter.get('/refreshToken', refreshToken);
+userRouter.post('/logout', logoutUser);
 
 //add test protected route 
 userRouter.get('/private',keycloak.protect(),protectedRoute);
