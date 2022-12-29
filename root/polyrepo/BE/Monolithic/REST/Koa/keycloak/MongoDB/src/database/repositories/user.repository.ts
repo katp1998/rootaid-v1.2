@@ -1,41 +1,101 @@
-//koa was not used in this process
-import { User } from '../models/user.model';
+import userModel from '../models/user.model'
+import { IUserInputs} from '../types/user.type'
+
+// Save user
+export const  createUser  = async ({name,email,password} : IUserInputs) =>{
+        try {
+            const user = new userModel({
+                name,
+                email,
+                password
+            })
+            
+            const userResult = await user.save()
+
+            return userResult
+
+
+        }
+        catch (error)
+        {
+            console.log(error); 
+            return error
+        }
+    }
 
 // find user by email
-export const findUser = async (email: any) => {
-  try {
-    const existingUser = await User.findOne({ where: { email } });
+ export const  findUserByEmail =async ({email} : any)=>{
+        try {
+            const existingUser = await userModel.findOne({ email: email });
+            return existingUser;
+        }
+        catch (error)
+        {
+            console.log(error); 
+        }
+}
 
-    return existingUser;
+// find user by username
+export const  findUserByUsername =async ({name} : any)=>{
+    try {
+        const existingUser = await userModel.findOne({ name: name });
+        return existingUser;
+    }
+    catch (error)
+    {
+        console.log(error); 
+    }
+}
 
-  } catch (error) {
-    console.log(error, 'from user.repository');
-  }
-};
+// find user by refreshtoken
+export const findUserByToken = async (refreshToken : any)   =>{
+    try {
+        const existingUser = await userModel.findOne({ refreshToken: refreshToken });
+        return existingUser;
+    }
+    catch (error)
+    {
+        console.log(error); 
 
-// find user by email
-export const findUserByUsername = async (name: any) => {
-  try {
-    const existingUser = await User.findOne({ where: { name } });
+    }
+} 
 
-    return existingUser;
+// save rfersh token
+export const saveRefreshToken =async (userID: string , refreshToken :string) => {
+    
+    const user = await userModel.findById(userID).findOneAndUpdate({refreshToken:refreshToken})
 
-  } catch (error) {
-    console.log(error, 'from user.repository');
-  }
-};
+    const result = await user?.save();
+    //  console.log(result)
+    
 
-// create user
-export const createUser = async ({ name, email, password }: { name: string, email: string, password: string }) =>{
-  try {
-    //CREATE USER:
-    const user = await User.save({
-      name,
-      email,
-      password,
-    });
-    return user;
-  } catch (error) {
-    return error;
-  }
-};
+}
+
+// find user by id
+export const  findUserById = async (id : string) =>{
+        try {
+            const existingUser = await userModel.findById(id).select('-password').select('-refreshToken')
+            console.log({existingUser})
+
+            return existingUser
+
+        }
+        catch (error) {
+            console.log(error);
+        }
+}
+    
+// remove refresh token from db
+export const removeRefreshToken =async (refreshToken : string) => {
+    try {
+        const user = await findUserByToken(refreshToken)   
+        if(user) {
+            user.refreshToken = '';
+            const result = await user.save();
+            console.log(result);
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+}

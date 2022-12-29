@@ -18,7 +18,7 @@ export class UserService {
 
      // Register user
     
-     async createUser(userCreateDTO: userCreatedto) {
+     async signUp(userCreateDTO: userCreatedto) {
         try{
             const {
                 username,
@@ -71,16 +71,13 @@ export class UserService {
                 status: HttpStatus.NOT_ACCEPTABLE,
                 message: error
               }, HttpStatus.NOT_ACCEPTABLE)
-        }
+        }        
+     }
+    
 
-
-        
-    }
-
-    // login user
-   
-
-    async loginUser(loginDTO: logindto) {
+// login user
+    async logIn(loginDTO: logindto)
+    {
         const { username, password } = loginDTO;
         let data :any;
         try{
@@ -147,7 +144,7 @@ export class UserService {
 
     //logout user
 
-    async logoutUser(refreshToken: string) {
+    async logOut(refreshToken: string) {
         try{
         const response = await this.httpService.axiosRef(
             {
@@ -210,7 +207,8 @@ export class UserService {
     } 
 
     // Get user by username
-    findUserByUsername(username: string) {
+    findUserByUsername(username: string)
+    {
         return this.userRepositary.findOne(
             {where :{ username }}
         );

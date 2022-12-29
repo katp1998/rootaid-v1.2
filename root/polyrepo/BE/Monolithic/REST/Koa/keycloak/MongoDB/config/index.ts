@@ -6,7 +6,7 @@ if(process.env.NODE_ENV !== 'production'){
 
 export default {
     port: process.env.PORT,
-    mongoURL: process.env.MONGO_URI,
+    dbURL: process.env.MONGO_URI,
     authServerUrl: process.env.AUTH_SEVER_URL,
     realm: process.env.REALM,
     clientId: process.env.CLIENT_ID,

@@ -5,7 +5,7 @@ if(process.env.NODE_ENV !== 'production'){
 }
 
 export default {
-    dbURL: process.env.MONGO_URI,
+    dbURL: process.env.DB_URL,
     port: process.env.PORT,
     authServerUrl: process.env.AUTH_SEVER_URL,
     realm: process.env.REALM,

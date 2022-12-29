@@ -50,7 +50,9 @@ export const findUserByToken = async (RefreshToken: string) => {
     try {
       const existingUser = await User.findOneBy({ refreshToken: RefreshToken });
       return existingUser;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
   
   //@desc SAVING REFRESH TOKEN

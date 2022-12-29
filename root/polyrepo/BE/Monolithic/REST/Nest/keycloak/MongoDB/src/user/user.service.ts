@@ -18,7 +18,7 @@ export class UserService {
 
      // Register user
     
-     async createUser(userCreateDTO: userCreatedto) {
+     async signUp(userCreateDTO: userCreatedto) {
          try {
              const {
                  username,
@@ -81,8 +81,7 @@ export class UserService {
 
     // login user
    
-
-    async loginUser(loginDTO: logindto) {
+    async logIn(loginDTO: logindto) {
         const { username, password } = loginDTO;
         let data :any;
         try{
@@ -126,7 +125,7 @@ export class UserService {
 
     //logout user
 
-    async logoutUser(refreshToken: string) {
+    async logOut(refreshToken: string) {
         try{
         const response = await this.httpService.axiosRef(
             {

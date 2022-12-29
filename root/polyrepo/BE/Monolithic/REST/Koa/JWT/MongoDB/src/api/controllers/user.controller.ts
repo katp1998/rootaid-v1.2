@@ -1,50 +1,121 @@
-import { registerUser, loginUser } from "../../services/auth/user.service";
+import { Context , Request} from 'koa';
+import jwt, { JwtPayload} from 'jsonwebtoken';
+import config from '../../config'
+import { createUser, findUser } from '../../database/repositories/user.repository';
+import { registerUser, loginUser, userFind, logout } from '../../services/auth/user.service';
+import { generateToken } from "../../utils";
 
-//REGISTER REQUEST INTERFACE
-interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
 
-//LOGIN REQUEST INTERFACE
-interface LoginRequest {
-  email: string;
-  password: string;
-}
+export interface CustomRequest extends Request {
+  user: any | JwtPayload;
+ }
+
+
+
+//FINDING USER
+export const handleUser = async (ctx:any) => {
+
+  const email = ctx.request.body;
+  const user = await findUser(email);
+  return user;
+
+  
+};
 
 //REGISTERING USER
-const handleRegister = async (ctx: any) => {
+export const handleRegister = async (ctx: any) => {
   try {
-    const { name, email, password } = <RegisterRequest>ctx.request.body;
-    //PASSING INTO METHOD IN USER.SERVICE
-    const data = await registerUser(name, email, password);
+    const { name, email, password } = ctx.request.body;
+    const data = await registerUser({name,email,password})
+    ctx.cookies.set('jwt',data.refreshToken, {httpOnly:true , sameSite:'none', maxAge:24*60*60*1000})
+    return ctx.body = {
+        id:data.id,
+        name:data.name,
+        accessToken : data.accessToken
+        };
+  } catch (error:any) {
     ctx.body = {
-      name: name,
-      response: data,
-    };
-  } catch (error) {
-    ctx.body(error);
-  }
-};
-
-//LOGIN USER:
-const handleLogin = async (ctx: any) => {
-  const { email, password } = <LoginRequest>ctx.request.body;
-
-  try {
-    //PASSING INTO METHOD IN USER.SERVICE
-    const data = await loginUser(email, password);
-    ctx.body = {
-      status: "Successful Login",
-      info: data,
-    };
-  } catch (error) {
-    ctx.body = {
-      status: "Unsuccessful Login",
-      ErrorCode: error,
+      error : error.message
     };
   }
+  console.log()
 };
 
-export { handleRegister, handleLogin };
+//LOGIN USER
+export const handleLogin = async (ctx: any) => {
+  try {
+    const { email, password } = ctx.request.body;
+    const data = await loginUser({email, password});
+    console.log("done login service")
+    ctx.cookies.set('jwt',data.refreshToken, {httpOnly:true , sameSite:'none', maxAge:24*60*60*1000})
+    console.log("done cookie")
+    return ctx.body = {
+      id:data.id,
+      name:data.name,
+      accessToken : data.accessToken
+      }
+    } catch (error:any) {
+      ctx.body = {
+        error : error.message
+      };
+    }
+
+  
+};
+
+
+export const refreshToken = async (ctx: any) => { 
+    const cookies = ctx.cookies.get('jwt')
+    if(!cookies) return ctx.status = 204
+    const refreshToken = cookies as string
+
+    const findUser = await userFind(refreshToken)
+    if(!findUser) return ctx.status = 403
+    
+    jwt.verify(
+      refreshToken,
+      `${config.refreshTokenKey}`,
+      async (err:any, decoded:any) => {
+        if(err || findUser.name !== decoded.name) return ctx.status(403)
+        const accessToken = await  generateToken({email:findUser.email , _id: findUser._id})
+        ctx.body = {accessToken}
+      }
+    )
+
+
+
+}
+
+export const logoutUser =async (ctx:any) => {
+  const cookies = ctx.cookies.get('jwt')
+  if(!cookies) return ctx.status = 204
+  const refreshToken = cookies as string
+
+  const findUser = logout(refreshToken)
+  if(!findUser) {
+    ctx.cookies.set('jwt', '')
+    return ctx.status = 204 
+  }
+
+  ctx.cookies.set('jwt', '')
+  ctx.status = 204
+  ctx.body = { message : "Logged Out Successfully"}
+  return
+  
+  
+
+}
+
+
+export const protectedRoute = async (ctx : any ) => {
+  try {
+    ctx.status = 200
+    ctx.body = {
+      message: "successful protected route",
+      user : ctx.body.userData
+    }
+  } catch (error) {
+    
+  }
+}
+
