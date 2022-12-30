@@ -1,7 +1,8 @@
-import { Body, Controller, Post, Get, Req, Res, HttpException, HttpStatus} from "@nestjs/common";
+import { Body, Controller, Post, Get, Req, Res, HttpException, HttpStatus, UseGuards} from "@nestjs/common";
 import { Request, Response } from 'express'
 import { AuthService } from "./auth.service";
 import { RegisterDto, LoginDto } from "./dto";
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -50,4 +51,10 @@ export class AuthController {
     response.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
     return response.sendStatus(200);
     }
+
+    @Get('hello')
+    @UseGuards(AuthGuard('jwt'))
+    async getHello(): Promise<string> {
+    return await this.authService.getHello();
+  }
 }
