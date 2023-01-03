@@ -1,14 +1,17 @@
-import {useState, useEffect} from 'react'
-import { User } from '../types/user.type';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router'
+import { User } from '../types/user.type';
+
+import Spinner from '../components/spinner/Spinner';
 
 import  useAuth  from '../hooks/useAuth';
 import authService from '../api/authService'
 
 import styles from '../styles/Home.module.css'
-import {Box, Typography, TextField, Button} from '@mui/material/';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
-const RegisterForm = () => {
+const registerForm = () => {
 
     const { auth, setAuth } = useAuth();
 
@@ -74,36 +77,26 @@ const RegisterForm = () => {
     };
 
   return (
-    <>
-    <div>
-      <form onSubmit={handleRegister}>
-        <Box 
-        display = "flex" 
-        flexDirection={"column"} 
-        maxWidth = {400} 
-        alignItems="center" 
-        justifyContent={"center"} 
-        margin="auto" 
-        marginTop={5} 
-        padding={'50px'} 
-        borderRadius={5} 
-        boxShadow={'5px 5px 10px #ccc'}
-        sx={{":hover":{
-          boxShadow:'10px 10px 20px #ccc'
-        }}}>
-          <Typography 
-          variant='h3'
-          padding= {3}
-          textAlign = "center">REGISTER</Typography>
-          <TextField type='text' name="name" value={fields.name}  onChange={onChange} required label="Name" variant="outlined" multiline placeholder='Enter your name' margin='normal' fullWidth color='error' />
-          <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
-          <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button> 
-        </Box>
-        </form>
-    </div>
-    </>
-  );
-};
+    <Form className={styles.form} onSubmit={handleRegister}>
+      <Form.Group className="mb-4" controlId="username">
+        <Form.Label>Username</Form.Label>
+        <Form.Control type="text" placeholder="Enter username" name='username' onChange={onChange} value={fields.name} />
+      </Form.Group>
 
-export default RegisterForm;
+      <Form.Group className="mb-4" controlId="email">
+        <Form.Label>Email</Form.Label>
+        <Form.Control type="email" placeholder="Enter email" name='email' onChange={onChange} value={fields.email} />
+      </Form.Group>
+
+      <Form.Group className="mb-4" controlId="password">
+        <Form.Label>Password</Form.Label>
+        <Form.Control type="password" placeholder="Enter password" name='password' onChange={onChange} value={fields.password}/>
+      </Form.Group>
+
+      <Button variant="primary" type="submit" className={styles.btn}>
+        Submit
+      </Button>
+    </Form>
+  )
+}
+export default registerForm

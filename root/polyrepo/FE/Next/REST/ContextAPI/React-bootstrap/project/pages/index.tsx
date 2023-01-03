@@ -8,7 +8,7 @@ import useAxiosPrivate from '../hooks/usePrivateRoute'
 export default function HomePage() {
   const [user,setUser] = useState<String>()
 
-  const {auth, setAuth} = useAuth()
+  const {auth,setAuth} = useAuth()
   const axiosPrivate = useAxiosPrivate()
   const router = useRouter()
 
