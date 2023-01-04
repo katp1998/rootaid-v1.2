@@ -1,4 +1,5 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request as RequestType } from 'express';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,14 +20,29 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksUri: `${authConfig.authority}/.well-known/jwks.json`,
       }),
 
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken,
       audience: authConfig.clientId,
       issuer: authConfig.authority,
       algorithms: ['RS256'],
     });
   }
 
+  private static extractJWT(req: RequestType): string | null {
+    if (
+      req.cookies
+    ) {
+      console.log(req.cookies.jwt)
+      return req.cookies.jwt;
+    }
+    return null;
+  }
+
   public async validate(payload: any) {
-    return !!payload.sub;
+    return payload.user;
   }
 }
+
+// ExtractJwt.fromExtractors([
+//         JwtStrategy.extractJWT,
+//         ExtractJwt.fromAuthHeaderAsBearerToken(),
+//       ])

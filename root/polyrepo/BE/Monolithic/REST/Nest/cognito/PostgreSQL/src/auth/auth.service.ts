@@ -1,5 +1,10 @@
-import { Injectable } from '@nestjs/common';
-
+import { Inject, Injectable } from '@nestjs/common';
+import { AuthConfig } from './auth.config';
+import {
+  AuthenticationDetails,
+  CognitoUser,
+  CognitoUserPool,
+} from 'amazon-cognito-identity-js';
 import * as AWS from 'aws-sdk';
 import * as crypto from 'crypto';
 import { createUser, saveRefreshToken, findUser, findUserByToken, removeRefreshToken } from '../database/repository/user.repository';
@@ -7,13 +12,23 @@ import { hashPassword } from '../utils/hashPassword';
 
 @Injectable()
 export class AuthService {
+  private userPool: CognitoUserPool;
+
+    constructor(
+    private readonly authConfig: AuthConfig,
+  ) {
+    this.userPool = new CognitoUserPool({
+      UserPoolId: this.authConfig.userPoolId,
+      ClientId: this.authConfig.clientId,
+    });
+  }
 
 private config = {
-    region: 'us-east-1',
+    region: 'ap-south-1',
 };
 
-private secretHash = '1ofv95uvqt9knp7vsg7g3ark5k192g46qt73iur43mat30604u0c';
-private clientId = '51qtvnblrch9vm6cbhgfaj37sl';
+private secretHash = '18fibfkk786p3bupviqr7ta8p332ia5a6d2r9clmcqi8qjgvnfkl';
+private clientId = '3mrht2qteq3ipv1o56v5s5c1a6';
 
 private cognitoService = new AWS.CognitoIdentityServiceProvider(this.config);
 
@@ -118,6 +133,9 @@ async logoutUser(refreshToken: string) {
     console.log(error)
   }
   
+}
+async getHello() {
+  return `This is a protected route`
 }
 
 }
