@@ -110,34 +110,6 @@ export default function LoginPage() {
         {error}
       </Form.Item>
     </Form>
-    {/* <div>
-      <form onSubmit={handleRegister}>
-        <Box 
-        display = "flex" 
-        flexDirection={"column"} 
-        maxWidth = {400} 
-        alignItems="center" 
-        justifyContent={"center"} 
-        margin="auto" 
-        marginTop={5} 
-        padding={'50px'} 
-        borderRadius={5} 
-        boxShadow={'5px 5px 10px #ccc'}
-        sx={{":hover":{
-          boxShadow:'10px 10px 20px #ccc'
-        }}}>
-          <Typography 
-          variant='h3'
-          padding= {3}
-          textAlign = "center">REGISTER</Typography>
-          <TextField type='text' name="name" value={fields.name}  onChange={onChange} required label="Name" variant="outlined" multiline placeholder='Enter your name' margin='normal' fullWidth color='error' />
-          <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
-          <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button> 
-          <h1>{error}</h1>
-        </Box>
-        </form>
-    </div> */}
     </>
   )
 }
