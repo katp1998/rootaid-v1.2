@@ -1,7 +1,8 @@
 # # Dependencies
 
-- yarn add bootstrap
-- yarn add react-bootstrap
+- yarn add @emotion/react
+- yarn add @emotion/styled
+- yarn add @mui/material
 - yarn add axios
 - yarn add react-router-dom
 - yarn add zustand
