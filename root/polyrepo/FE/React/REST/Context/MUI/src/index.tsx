@@ -11,10 +11,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <AuthProvider>
-    <Router>
-      <App />
-    </Router>
-  </AuthProvider>
+      <Router>
+        <App />
+      </Router>
+    </AuthProvider>
 );
 
 reportWebVitals();
