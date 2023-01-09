@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 const useAxiosPrivate = (): AxiosInstance =>
 {
     const refresh = useRefreshToken();
-    const auth = useSelector((state: any) => state.authUser);
+    const auth = useSelector((state: any) => state.auth);
 
     useEffect(() =>
     {
@@ -33,7 +33,7 @@ const useAxiosPrivate = (): AxiosInstance =>
                 {
                     prevRequest.sent = true;
                     const newAccessToken = await refresh();
-                    console.log("new access token", newAccessToken)
+                    console.log("new access token", newAccessToken);
                     prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
                     return await axiosPrivate(prevRequest);
                 }

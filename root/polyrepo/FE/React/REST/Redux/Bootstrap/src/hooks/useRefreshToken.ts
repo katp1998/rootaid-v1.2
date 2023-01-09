@@ -1,7 +1,8 @@
 import { Dispatch } from 'redux';
 import axios from '../api/axios';
 import { useDispatch } from 'react-redux'
-import { setAccessToken } from '../Redux/Actions/authActions';
+import { setAccessToken} from '../features/auth/authSlice';
+
 
 const useRefreshToken = () =>
 {
@@ -13,7 +14,7 @@ const useRefreshToken = () =>
         });
 
         dispatch(setAccessToken(response.data.accessToken));
-
+        console.log("new accesstoken", response.data.accessToken);
         return response.data.accessToken;
     }
     return refresh;
