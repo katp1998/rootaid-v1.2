@@ -1,74 +1,41 @@
-import {useEffect,useState} from 'react'
-import { Link ,useNavigate } from 'react-router-dom'
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useNavigate } from 'react-router-dom'
 import authService from '../api/authService'
-
-import useStore from '../store/store';
+import authStore from '../store/authStore';
 
 export default function NavBar() {
 
-  const navigate = useNavigate()
-  const user = useStore((state:any) => state.user)
-  const isLoggedIn = useStore((state:any) => state.isLoggedIn)
-  const setUserStore = useStore((state:any) => state.setUserStore)
-  const logout  = useStore((state:any) => state.logout)
+  const navigate = useNavigate();
+  const { auth, setAuth } = authStore(
+    (state: any) => ({ auth: state.auth ,setAuth:state.setAuth}));
 
-  useEffect(() =>  {
-    const existingUser = authService.getCurrentUser();
-
-    if (existingUser) {
-      setUserStore(existingUser.name);
-    }
-  },[])
-
-  const logOut = () =>{
-    authService.logout()
-    logout()
-    navigate('/')
+  const logOut = () => {
+    authService.logout();
+    setAuth({ accessToken: '', isAuthenticated: false });
+    navigate('/');
   }
+
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar style={{ backgroundColor: '#0f072c' }} expand="lg">
       <Container>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-          <Nav.Link href="/">Home</Nav.Link>
-          {isLoggedIn ? (
-              <Nav.Link href="/login" onClick={logOut}>Logout</Nav.Link>
+            <Nav.Link href="/" style={{ color: "#ffffff" }}>Home</Nav.Link>
+            
+            {auth.isAuthenticated && auth.isAuthenticated ? (
+              <Nav.Link href="/login" onClick={logOut} style={{ color: "#ffffff" }}>Logout</Nav.Link>
           ):(
-          <>
-            <Nav.Link href="/login">Login</Nav.Link>
-            <Nav.Link href="/register">Register</Nav.Link>
-          </>
-          )}
+                <>
+                  <Nav.Link href="/login" style={{ color: "#ffffff" }}>Login</Nav.Link>
+                  <Nav.Link href="/register" style={{ color: "#ffffff" }}>Register</Nav.Link>
+                </>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
-      // <AppBar  position='static'>
-      //   <Toolbar>
-      //     <Typography>
-      //       <Link to={"/"}>Home</Link>
-      //     </Typography>
-      //     {user.isLoggedIn && (
-      //     <Typography>
-      //         <Link to={"/private"} >Private</Link>
-      //     </Typography>
-      //     )}
-      //     {user.isLoggedIn ? (
-      //       <Typography>
-      //         <a href="/login"  onClick={logOut}>Logout</a>
-      //       </Typography>
-      //     ):(
-      //       <Typography>
-      //         <Link to={"/login"}>Login</Link>
-      //         <Link to={"/register"}>Register</Link>
-      //       </Typography>
-      //     )}
-      //   </Toolbar>
-      // </AppBar>
   )
 }

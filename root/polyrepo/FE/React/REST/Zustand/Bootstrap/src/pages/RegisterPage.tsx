@@ -1,92 +1,111 @@
-import {useState,useEffect} from 'react'
+import {
+    useState,
+    useEffect
+  } from 'react'
 import { useNavigate } from "react-router-dom";
-import authService from '../api/authService';
 import { User } from '../types/user.type';
-
+import authService from '../api/authService';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import styles from '../styles/Home.module.css'
-
-
-import useStore from '../store/store';
-
-export default function LoginPage() {
-  const [fields,setFields] = useState({
-    name: '',
-    email:'',
-    password: ''
-  }) 
-
-  const setUserStore = useStore((state:any) => state.setUserStore)
-  const setError = useStore((state:any) => state.setError)
-  const isError = useStore((state:any) => state.isError)
-  const isLoggedIn = useStore((state:any) => state.isLoggedIn)
-  const errorMessage = useStore((state:any) => state.errorMessage)
-  const reset  = useStore((state:any) => state.reset)
-
-
-  const onChange =  (event:any) =>{
-    setFields({...fields, [event.target.name] : event.target.value});
-    setError('')
-  }
-
+import styles from '../styles/Home.module.css';
+import authStore from '../store/authStore';
+  
+export default function RegisterPage()
+{  
   const navigate = useNavigate();
+  const { auth, setAuth } = authStore((state: any) => ({
+    auth: state.auth, setAuth: state.setAuth
+  }));
+  
+  const [fields, setFields] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
 
-  useEffect(() =>  {
-    if(isError) {
-      setError(errorMessage)
-    }
-    if(isLoggedIn) {
-      navigate('/')
-      window.location.reload()
-    }
-    reset()
-  },[isLoggedIn])
-
-  const handleRegister = async (e :any) => {
+  const [error, setError] = useState<String>('');
+  
+  // Form onchange function 
+    
+  const onChange = (event: any) => {
+    setFields({ ...fields, [event.target.name]: event.target.value });
+    setError('');
+  }
+  
+    // submit form function
+  const handleRegister = async (e: any) =>
+  {
     e.preventDefault();
-
-    const user : User = {
+    setError('');
+  
+    const user: User = {
+      name: fields.name as string,
       email: fields.email as string,
       password: fields.password as string
-    } 
-    try {
-      const response = await authService.register(user)
-      setUserStore({name:response.name})
+    }
+  
+    try
+    {
+        // get response from register endpoint
+      const response = await authService.register(user);
 
-    } catch (error : any) {
-      const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong'
-      setError(message)
+      const accessToken = response?.data?.accessToken;
+  
+  // set value on zustand state
+      setAuth({ accessToken, isAuthenticated: true });
+            
+    }
+    catch (error: any)
+    {
+      const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong';
+      setError(message);
     }
       
   };
-
+  
+  useEffect(() => {
+    if (auth.isAuthenticated)
+    {
+      navigate('/');
+    }
+    
+  }, [auth]);
+  
   return (
     <>
-    <div>
-    <h2 className={styles.title}>Register</h2>
-    <Form className={styles.form} onSubmit={handleRegister}>
-      <Form.Group className="mb-4" controlId="username">
-        <Form.Label>name</Form.Label>
-        <Form.Control type="text" placeholder="Enter name" name="name" onChange={onChange} value={fields.name} />
-      </Form.Group>
+      <div>
+        <Form className={styles.form} onSubmit={handleRegister}>
+          <h2 className={styles.title}>Register</h2>
+          
+          {/* Name */}
+          <Form.Group className="mb-4" controlId="username">
+            <Form.Label>name</Form.Label>
+            <Form.Control type="text" placeholder="Enter name" name="name" onChange={onChange} value={fields.name} />
+          </Form.Group>
 
-      <Form.Group className="mb-4" controlId="email">
-        <Form.Label>Email</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" name="email" onChange={onChange} value={fields.email} />
-      </Form.Group>
+          {/* Email */}
+          <Form.Group className="mb-4" controlId="email">
+            <Form.Label>Email</Form.Label>
+            <Form.Control type="email" placeholder="Enter email" name="email" onChange={onChange} value={fields.email} />
+          </Form.Group>
 
-      <Form.Group className="mb-4" controlId="password">
-        <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Enter password"  name="password" onChange={onChange} value={fields.password}/>
-      </Form.Group>
+          {/* Password */}
+          <Form.Group className="mb-4" controlId="password">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder="Enter password" name="password" onChange={onChange} value={fields.password} />
+          </Form.Group>
 
-      <Button variant="primary" type="submit" onSubmit={handleRegister} className={styles.btn}>
-        Submit
-      </Button>
-      <Form.Label>{errorMessage}</Form.Label>
-    </Form>
-    </div>
-    </>
-  )
-}
+          <Button  type="submit" className={styles.btn} style={{backgroundColor:'#ff3841',border:" none"}}>
+            Submit
+          </Button>
+
+          <h6 className={styles.error}>{error}</h6>
+          
+        </Form>
+
+      </div>
+      
+    </> 
+    )
+  }
+  
