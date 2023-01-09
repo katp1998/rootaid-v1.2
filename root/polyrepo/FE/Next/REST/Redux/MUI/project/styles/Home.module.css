@@ -1,0 +1,47 @@
+.container {
+  padding: 0 2rem;
+}
+
+.main {
+  min-height: 100vh;
+  padding: 4rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  margin-bottom: 1em;
+  text-align: center;
+  line-height: 0.5;
+  font-size: 4rem;
+}
+
+.logo {
+  height: 1em;
+  margin-left: 0.5rem;
+}
+
+.form {
+  margin: auto;
+  padding: 2em 3em;
+  width: 25em;
+  height: 30em;
+  background-color: #f2f2f2;
+  border-radius: 7%;
+}
+
+.btn {
+  float: right;
+  outline: none;
+  border: none;
+  background-color: #fe3941
+}
+
+.btn:hover {
+  background-color: rgba(254, 57, 65, 0.9);
+}
+
+
