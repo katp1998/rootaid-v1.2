@@ -3,10 +3,10 @@ import {
     useState
   } from 'react';
 import useAxiosPrivate from '../hooks/usePrivateRoute';
-import styles from '../styles/Home.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from 'redux';
 import { isUserLogin } from '../features/auth/authSlice';
+import { Typography } from '@mui/material';
     
 export default function HomePage()
 {
@@ -19,8 +19,7 @@ export default function HomePage()
 
   useEffect(() =>
   {   
-    if (auth.isAuthenticated)
-    {
+    if (auth.isAuthenticated) {
         let isMounted = true;
         const controller = new AbortController();
     
@@ -56,14 +55,15 @@ export default function HomePage()
     
   return (
     <>
-      <div> 
-        <h3 className={styles.username}>
+      <div>  
+        <Typography fontSize={30} style={{ color: "#200f5f" }} fontWeight='bold' padding={3} textAlign="left">
           Welcome {user && user} !
-        </h3>
+        </Typography>
       </div>
     </>
   )
 }
+
   
     
     
