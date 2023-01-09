@@ -7,19 +7,18 @@ import './styles/globals.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-import {AuthContextProvider} from '../src/contexts/AuthContext'
+import {AuthProvider} from './context/AuthProvider'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <AuthContextProvider>
-      <Router>
-        <App />
-      </Router>
-    </AuthContextProvider>
-  </React.StrictMode>
+  <AuthProvider>
+    <Router>
+      <App />
+    </Router>
+  </AuthProvider>
 );
+
 
 

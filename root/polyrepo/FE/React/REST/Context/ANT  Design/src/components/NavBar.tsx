@@ -1,47 +1,46 @@
+import { useNavigate } from 'react-router-dom';
+import  useAuth  from '../hooks/useAuth';
+import authService from '../api/authService';
 import { Menu } from "antd";
-import { Link, useNavigate } from 'react-router-dom'
-
-import authService from '../api/authService'
-
-import { useAuth } from '../contexts/AuthContext'; //React Context
+import styles from '../styles/Home.module.css';
 
 export default function NavBar() {
 
-    const navigate = useNavigate()
-    const {user, logout, isLoggedIn} = useAuth()
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
 
-
-    
-
-    const logOut = () =>{
-      authService.logout()
-      logout()
-      navigate('/')
-    }
-
-
+  const logOut = () => {
+    authService.logout();
+    setAuth({ accessToken: '',  isAuthenticated: false });
+    navigate('/');
+  }
+  
   return (
-    <>
-      <Menu mode="horizontal">
-      <Menu.Item key="home">
-        <Link to={"/"} style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Home</Link>
-        </Menu.Item>
-        {isLoggedIn ? (
-          <Menu.Item key="logout">
-          <a href="/login"  onClick={logOut} style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Logout</a>
-          </Menu.Item>
-        ):(
-          <>
-            <Menu.Item key="login">
-            <Link to={"/login"} style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Login</Link>
-            </Menu.Item>
-            <Menu.Item key="register">
-            <Link to={"/register"} style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Register</Link>
-            </Menu.Item>
-          </>
-        )}
+    <Menu mode="horizontal" className={styles.nav}>
 
-      </Menu>
-    </>
+      <Menu.Item className={styles.navOption}>
+        <a href="/" >Home</a>
+      </Menu.Item>
+      
+      {auth.isAuthenticated ?
+        (
+          <Menu.Item className={styles.navOption}>
+            <a href="/login" onClick={logOut}  >Logout</a>  
+          </Menu.Item>
+        
+        ) :
+        <>
+          <Menu.Item className={styles.navOption} >
+            <a href="/login"  >Login</a>  
+          </Menu.Item>
+        
+          <Menu.Item  className={styles.navOption}>
+            <a href="/register"  >Register</a>  
+          </Menu.Item>
+
+        </>
+      }
+    </Menu>
   )
 }
+
