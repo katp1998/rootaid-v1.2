@@ -7,8 +7,8 @@ import { useRouter } from 'next/router'
 import { User } from '../types/user.type';
 
 import authService from '../pages/api/authService'
-import { setAuth } from '../store/slices/authSlice';
-import { RootState } from '../store/store';
+import { setAuth } from '../features/auth/authSlice';
+import { RootState } from '../features/store';
 
 import styles from '../styles/Home.module.css'
 import Button from 'react-bootstrap/Button';

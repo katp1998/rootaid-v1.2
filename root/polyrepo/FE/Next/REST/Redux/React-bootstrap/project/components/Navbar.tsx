@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux' 
-import { RootState } from '../store/store'; 
-import { logout } from '../store/slices/authSlice';
+import { RootState } from '../features/store'; 
+import { logout } from '../features/auth/authSlice';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
