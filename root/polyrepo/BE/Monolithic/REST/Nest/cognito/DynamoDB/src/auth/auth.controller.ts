@@ -22,7 +22,6 @@ export class AuthController {
         const {username, password} = dto
 
         const result = await this.authService.loginUser(username, password)
-        // console.log(result)
         response.cookie('jwt', result, {httpOnly:true, sameSite:'none', maxAge:24*60*60*1000})
         return result
 

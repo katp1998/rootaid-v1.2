@@ -1,74 +1,94 @@
-import { generateToken, validatePassword } from "../../utils/index";
-import { generatePassword } from "../../utils/index";
-import {
-  findUser,
-  createUser,
-} from "../../database/repositories/user.repository";
+import { generateToken, validatePassword, generateRefreshToken } from '../../utils/index';
+import { generatePassword } from '../../utils/index';
+import { v4 as uuidv4 } from 'uuid';
+import { findUser, createUser, saveRefreshToken,findUserByToken,findUserById,removeRefreshToken } from '../../database/repository/user.repository';
 
-const registerUser = async (name: string, email: string, password: string) => {
-  try {
-    //CHECK IF USER EXISTS:
-    const userExists = await findUser(email);
+export interface RegisterInputs {
+  name:string,
+  email:string,
+  password:string
+}
 
-    if (!userExists) {
-      let hashedPassword = await generatePassword(password);
+export interface LoginInputs {    
+  email:string,
+  password:string
+}
 
-      //creating user in database (user.repository):
-      const newUser = await createUser({
-        name,
-        email,
-        password: hashedPassword,
-      });
+export const registerUser = async (userInputs : RegisterInputs) => {
 
-      const token = await generateToken({
-        email: newUser.email,
-        _id: newUser._id,
-      });
+   const { name ,email ,password} = userInputs
+   const id = uuidv4()
+    try {
 
-      //RETURNING THE TOKEN:
-      return {token: token};
-    } else{
-      return {message: 'user exists, please login'}
-    }
-  } catch (error) {
-    //ERRORS THROWN WHEN REGISTERING USER WAS UNSUCCESSFUL:
-    console.log(error);
-    return {message: 'error in registering user, thrown from user.service.ts'};
-  }
-};
+    const checkExistingUser : any = await findUser(email)
 
-const loginUser = async (email: string, password: string) => {
-  try {
-    const existingUser = await findUser( email );
-    console.log(existingUser);
+    if(!checkExistingUser[0]){
 
-    if (existingUser) {
-      //COMPARE PASSWORDS:
-      const validatedPassword = await validatePassword(
-        password,
-        existingUser.password
-      );
+      let hashedPassword = await generatePassword(password)
+
+      const newUser : any = await createUser({id ,name,email,password:hashedPassword})
       
-      if (validatedPassword) {
-        //IF THE PASSWORD IS CORRECT:
-        const token = await generateToken({
-          email: existingUser.email,
-          _id: existingUser._id,
-        });
-        //RETURN USER TOKEN & ID:
-        return { id: existingUser._id, token };
+      const accessToken = await generateToken({email: newUser.email, id: newUser.id})
 
-      } else {
-        //IF THE USER IS NOT CORRECT:
-        return { error: "Incorrect Password" };
-      }
+      const refreshToken = await generateRefreshToken({name: newUser.name})
+
+       await saveRefreshToken(newUser._id,refreshToken,)
+
+      return {id:newUser.id, accessToken,name:newUser.name,refreshToken}
+
     } else {
-      //IF USER DOESNT EXIST
-      return { error: " User not registered " };
-    }
-  } catch (error) {
-    return error;
+      throw new Error("Email Already Registered")
+    }   
+  } catch (error : any) {
+    console.log(error);
+    throw new Error(error.message)
   }
 };
 
-export { registerUser, loginUser };
+ export const loginUser = async (userInputs : LoginInputs) => {
+  const {email, password} = userInputs
+  try {
+    const existingUser  :any = await findUser(email)
+
+    if (existingUser[0]) {
+        const  validatedPassword = await validatePassword(password, existingUser[0].password)
+
+        if(validatedPassword){
+                const accessToken = await generateToken({email : existingUser[0].email, id:existingUser[0].id})   
+                const refreshToken = await generateRefreshToken({name:existingUser[0].name})
+                await saveRefreshToken(existingUser[0].id,refreshToken)
+
+                return {id: existingUser[0].id,name:existingUser[0].name,  accessToken,refreshToken }
+        }else {
+            throw new Error("Incorrect Password")
+        }
+    }else {
+        throw new Error("User not found")
+    }
+} catch (error:any) {
+    throw new Error(error.message)
+}
+};
+
+export const userFind = async (refreshToken:string) => {
+  try {
+      const user = await findUserByToken(refreshToken)
+      return user
+  } catch (error:any) {
+      throw new Error(error.message)
+  }
+}
+
+export const logout =async (refreshToken : string) => {
+
+   await removeRefreshToken(refreshToken)
+}
+
+export const userFindByID = async (userID : string) => {
+  try {
+    const user = await findUserById(userID)
+    return user
+} catch (error:any) {
+    throw new Error(error.message)
+}
+}

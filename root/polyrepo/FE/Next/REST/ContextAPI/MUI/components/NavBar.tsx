@@ -4,19 +4,16 @@ import { useRouter } from 'next/router'
 
 import authService from '../api/authService'
 
-import { useAuth } from '../contexts/AuthContext'; //React Context
+import useAuth from '../hooks/useAuth'; //React Context
 
 export default function NavBar() {
 
     const router = useRouter()
-    const {user, logout, isLoggedIn} = useAuth()
+    const { auth, setAuth } = useAuth()
 
-
-    
-
-    const logOut = () =>{
+    const logOut = () => {
       authService.logout()
-      logout()
+      setAuth({accessToken:'', isLoggedIn:false})
       router.push('/')
     }
 
@@ -29,9 +26,10 @@ export default function NavBar() {
             <Link href={"/"} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Home</Link>
           </Typography>
           <Box alignContent="right" sx={{flexGrow: 1, textAlign: "right"}}>
-          {isLoggedIn ? (
+          {auth.isLoggedIn ? (
             <Typography style={{textDecoration: "none", color:"white"}}>
-              <a href="/login"  onClick={logOut} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Logout</a>
+              {/* <a href="/login"  onClick={logOut} style={{textDecoration: "none", color:"white", marginRight:"10px"}}>Logout</a> */}
+              <Link href="/login" onClick={logOut} >Logout</Link>
             </Typography>
           ):(
             <Typography>

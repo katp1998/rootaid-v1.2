@@ -1,48 +1,41 @@
-import axios from "axios";
+import axios from "./axios";
+import { User } from "../types/user.type";
 
-const API_URL = "/user";
+// register
+const register = async (userData: User) => {
+    const response = await axios.post('/register', userData,
+        {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
+        });
 
-const register = (name :any,email:any,password:any) => {
-  return axios.post(API_URL + "/register", {
-      name,  
-      email,
-      password,
-    })
-    .then((response) => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
+    return response;
+}
 
-      return response;
-    });
-};
+// login
+const login = async (userData: User) =>
+{
+    const response = await axios.post('/login', userData, 
+        {
+            headers: { 'Content-Type': 'application/json' },
+            withCredentials: true
+        })
+    
+    return response;
+}
 
-const login = (email:any, password:any) => {
-   return axios.post(API_URL + "/login", {
-      email,
-      password,
-    })
-    .then((response) => {
-      if (response.data.token) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      return response;
-    });
-};
-
-const logout = () => {
-  localStorage.clear();
-};
-
-const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem("user") as string);
-};
+// logout
+const logout = async () => {
+    const response = await axios.post('/logout',null,
+        {
+            withCredentials: true
+        })
+}
 
 const authService = {
-  register,
-  login,
-  logout,
-  getCurrentUser,
-};
+    register,
+    logout,
+    login
+}
 
-export default authService;
+export default authService

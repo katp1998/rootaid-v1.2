@@ -1,21 +1,25 @@
-import express , { Express ,Request , Response } from 'express';
-//import cors from 'cors';
-import bodyparser from 'body-parser'
-import {connection} from '../database/connection';
 
-import  userRouter from '../src/user.routes'
-require("dotenv").config()
+import express , { Express ,Request , Response } from 'express';
+import cors from 'cors';
+
+import bodyparser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import { setDdb } from './database/client';
+
+import  userRouter from './api/routes/userRoutes'
+
+import config from './config/index'
+import { corsOptions } from './config/corsOptions';
+// import { credentials } from './api/middlewares/credentials';
 const app : Express = express()
 
-const PORT = 3000
+setDdb()
 
-//
-connection()
-
-//app.use(cors())
+// app.use(credentials)
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use((bodyparser.urlencoded({ extended: true })))
-
+app.use(cookieParser());
 
 app.get('/' ,(req : Request,res : Response) =>{
     res.json({data : "hello"})
@@ -24,6 +28,7 @@ app.get('/' ,(req : Request,res : Response) =>{
 app.use('/user', userRouter)
 
 
-app.listen(PORT, ()=>{
-    console.log(`Server running at ${PORT}`)
+app.listen(config.port, ()=>{
+    console.log(`Server running at ${config.port}`)
 })
+

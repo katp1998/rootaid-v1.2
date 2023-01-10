@@ -7,6 +7,7 @@ import config from "./config"
 import userRouter from './src/api/routes/userRoutes';
 import { getKeycloak, getStore } from './config/keycloak-config';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
 
 //GETTING PORT FROM .ENV FILE:
@@ -26,11 +27,18 @@ app.use(session({
     store: memoryStore
 }));
   
-app.use(keycloak.middleware());
+app.use(keycloak.middleware(
+    {
+        logout: '/logout',
+        admin: '/',
+        protected:'/protected/resource'
+    }
+));
 
-app.use(cors())
-app.use(express.json())
-app.use((bodyparser.urlencoded({ extended: true })))
+app.use(cors());
+app.use(express.json());
+app.use((bodyparser.urlencoded({ extended: true })));
+app.use(cookieParser());
 
 //CONNECTING TO DATABASE:
 connection.then(() =>

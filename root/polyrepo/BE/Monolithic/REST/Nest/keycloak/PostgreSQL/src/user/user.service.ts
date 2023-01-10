@@ -19,7 +19,7 @@ export class UserService {
 
     // Register user
     
-    async createUser(userCreateDTO: userCreatedto) {
+    async signUp(userCreateDTO: userCreatedto) {
         try{
             const {
                 username,
@@ -55,11 +55,7 @@ export class UserService {
 
                 const newUser = this.userRepositary.save(userCreateDTO);
     
-                throw new HttpException({
-                    status: HttpStatus.CREATED,
-                    message: 'Sucessfully created',
-                    user:newUser
-                  }, HttpStatus.CREATED)
+                return { message: "created" };    
                 
             }
 
@@ -74,7 +70,7 @@ export class UserService {
         {
             throw new HttpException({
                 status: HttpStatus.NOT_ACCEPTABLE,
-                message: error
+                message: 'Already username registered'
               }, HttpStatus.NOT_ACCEPTABLE)
         }
 
@@ -83,12 +79,11 @@ export class UserService {
     }
 
     // login user
-   
 
-    async loginUser(loginDTO: logindto) {
+    async logIn(loginDTO: logindto) {
         const { username, password } = loginDTO;
         let data :any;
-        try{
+        try {
             const response = await this.httpService.axiosRef(
             {
                     method: 'post',
@@ -103,28 +98,82 @@ export class UserService {
                     })
             
                 });
-             data = response.data;
-            }
-            catch (error)
-            {
-                throw new HttpException({
-                    status: HttpStatus.UNAUTHORIZED,
-                    message: "Unauthorized",
-                    user:null,
-                    access_token:null
-                }, HttpStatus.UNAUTHORIZED);
-            }
+            data = response.data;
+        }
+        catch (error)
+        {
+            console.log(error);
+            return null;
+        }
+
+        const user = await this.findUserByUsername(username);
+        await (user.id);
+         //save refresh token
+        await this.userRepositary.update({ id: user.id }, { refreshToken: data.refresh_token });
             
-            const user = await this.findUserByUsername(username);
-            
-            throw new HttpException({
-                status: HttpStatus.OK,
-                message: 'Sucessfully Logged In',
-                user: user,
-                access_token: data.access_token,
-          }, HttpStatus.OK);
-        
+        return {
+            user: user,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token
+        };
     }
+
+    //logout user
+
+    async logOut(refreshToken: string) {
+        try{
+        const response = await this.httpService.axiosRef(
+            {
+                method: 'post',
+                url: `${process.env.AUTH_SEVER_URL}realms/master/protocol/openid-connect/logout`,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+                    Authorization: `Bearer ${refreshToken}`
+                }
+            }
+        );
+            // remove refresh token from db
+            await this.userRepositary.update({ refreshToken: refreshToken }, { refreshToken: '' });
+
+            return 'Logout sucessfully';
+        }
+        catch (error)
+        {
+            throw new HttpException({
+                status: HttpStatus.NOT_ACCEPTABLE,
+                message: 'User not validate'
+            }, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+     // verify refresh token
+
+     async verifyRefreshToken(refreshToken: string) {
+        try {
+            const response = await this.httpService.axiosRef(
+                {
+                    method: 'post',
+                    url: `${process.env.AUTH_SEVER_URL}realms/${process.env.REALM}/protocol/openid-connect/token`,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+                    data: stringify({
+                        client_id: process.env.CLIENT_ID,
+                        grant_type: 'refresh_token',
+                        client_secret: process.env.SECRET_ID,
+                        refresh_token: refreshToken
+                    })
+            
+                });
+    
+            return response.data;
+        }
+        catch (error)
+        {
+            console.log(error);
+            return 'Refresh token not accepted';
+        }    
+     }
+    
+    
 
     //public token
 

@@ -1,9 +1,10 @@
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './database/models/user.schema';
+import { User } from './database/models/user.model';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -25,6 +26,10 @@ dotenv.config();
       ],
       synchronize: true,
     }),
+
+  ConfigModule.forRoot({
+      isGlobal: true,
+  })
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,10 +1,14 @@
-import {Entity, ObjectIdColumn, Column, BaseEntity} from 'typeorm'
-import {ObjectId} from 'mongodb'
+import {
+  Entity,
+  Column,
+  BaseEntity,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 
 @Entity()
-export class User extends BaseEntity{
-  @ObjectIdColumn()
-  _id!: ObjectId;
+export class User extends BaseEntity {
+  @PrimaryGeneratedColumn()
+  _id!: number;
 
   @Column()
   name!: string;
@@ -14,6 +18,9 @@ export class User extends BaseEntity{
 
   @Column()
   password!: string;
+  
+  @Column({ nullable: true })
+  refreshToken!: string;
 
 
 }

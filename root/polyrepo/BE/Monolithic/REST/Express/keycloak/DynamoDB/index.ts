@@ -7,6 +7,7 @@ import userRouter from './src/api/routes/userRoutes';
 import { getKeycloak, getStore } from './config/keycloak-config';
 import session from 'express-session';
 import { DynamoDB } from './database/client';
+import cookieParser from 'cookie-parser'
 
 
 //GETTING PORT FROM .ENV FILE:
@@ -28,9 +29,10 @@ app.use(session({
   
 app.use(keycloak.middleware());
 
-app.use(cors())
-app.use(express.json())
-app.use((bodyparser.urlencoded({ extended: true })))
+app.use(cors());
+app.use(express.json());
+app.use((bodyparser.urlencoded({ extended: true })));
+app.use(cookieParser());
 
 //CONNECTING TO DATABASE:
 DynamoDB;

@@ -1,63 +1,69 @@
 import { User } from '../types/user.type';
 import {useState,useEffect} from 'react';
-import React from 'react';
 import { useRouter } from 'next/router'
-import { useAuth } from '../contexts/AuthContext';
+
+import  useAuth  from '../hooks/useAuth';
 import authService from '../api/authService'
 
 import {Box, Typography, TextField, Button} from '@mui/material/';
 
 import styles from '../styles/Home.module.css'
 
-const loginForm: React.FC = () => {
+const LoginForm = () => {
 
-  const [fields,setFields] = useState({
-    email:'',
-    password: ''
-  }) 
+     const { auth, setAuth } = useAuth();
+    //setAuth({isLoggedIn: false})
 
-  const {setUserStore,setError,reset,isError,errorMessage,isLoggedIn} = useAuth()
-  const router = useRouter()
+    const [fields,setFields] = useState({
+        email:'',
+        password: ''
+    })
+ 
+    const [loading, setLoading] = useState<Boolean>(false)    
+    const [error, setError] = useState<String>('')
 
-  useEffect(() => {
-    if(isError) {
-      setError(errorMessage)
-      console.log(errorMessage)
-    }
-    if(isLoggedIn) {
-      router.push('/')
-      window.location.reload()
-    }
-    reset()
-  },[isLoggedIn])
+    const router = useRouter()
 
-
-  const onChange =  (event:any) =>{
+    const onChange =  (event:any) =>{
     setFields({...fields, [event.target.name] : event.target.value});
     setError('') // set error state to empty
-  }
-
-  const handleLogin = async (e :any) => {
-    e.preventDefault();
-
-    const user : User = {
-      email: fields.email as string,
-      password: fields.password as string
-    }
-    try {
-      const response = await authService.login(user)
-        setUserStore({name:response.name})
-        console.log(isLoggedIn)
-
-    } catch (error : any) {
-      const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong'
-      setError(message)
     }
 
-  };
 
+    useEffect(() => {
+        // if(isError) {
+        //   setError(errorMessage)
+        //   console.log(errorMessage)
+        // }
+        if(auth.isLoggedIn) {
+            router.push('/')
+            //window.location.reload()
+        }
+    },[auth])
 
+    const handleLogin = async (e :any) => {
+        e.preventDefault();
+        setError('')
+        setLoading(true)
+        const user : User = {
+          email: fields.email as string,
+          password: fields.password as string
+        }
+        try {
+          const response = await authService.login(user)
 
+            const name = response?.data?.name
+            const accessToken = response?.data?.accessToken
+
+            setAuth({accessToken,isLoggedIn:true})
+        } catch (error : any) {
+          const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong'
+          setError(message)
+          //console.log(error)
+        }
+        setLoading(false)
+
+    }
 
   return (
     <>
@@ -84,7 +90,7 @@ const loginForm: React.FC = () => {
           <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
           <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
           <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Login</Button>  
-          <h1>{errorMessage}</h1>
+          {error}
         </Box>
 
         </form>
@@ -93,4 +99,4 @@ const loginForm: React.FC = () => {
   );
 };
 
-export default loginForm;
+export default LoginForm;
