@@ -8,8 +8,8 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import styles from '../styles/Home.module.css';
 import { Dispatch } from 'redux';
-import { useDispatch, useSelector } from 'react-redux'
-import { register } from '../Redux/Actions/authActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../features/auth/authSlice';
 
   
 export default function RegisterPage()
@@ -18,7 +18,7 @@ export default function RegisterPage()
   const dispatch: Dispatch<any> = useDispatch();
 
   // redux state
-  const auth = useSelector((state: any) => state.authUser);
+  const auth = useSelector((state: any) => state.auth);
   
   const [fields, setFields] = useState({
     name: '',

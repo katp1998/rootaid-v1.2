@@ -7,7 +7,7 @@ const register = async (userData: User) => {
         {
             headers: { 'Content-Type': 'application/json' },
             withCredentials: true
-        })
+        });
 
     return response;
 }

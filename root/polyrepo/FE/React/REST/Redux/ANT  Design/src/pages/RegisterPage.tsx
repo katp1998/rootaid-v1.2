@@ -1,102 +1,92 @@
-import {useState,useEffect} from 'react'
+import {
+    useState,
+    useEffect
+  } from 'react'
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { User } from '../types/user.type';
-import { register , reset } from '../features/authSlice/auth.slice';
+import styles from '../styles/Home.module.css';
+import { Dispatch } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../features/auth/authSlice';
+import {
+    Button,
+    Form,
+    Input
+} from 'antd';
 
-import { Button, Checkbox, Form, Input } from 'antd';
-import styles from '../styles/Home.module.css'
+  
+export default function RegisterPage()
+{  
+  const navigate = useNavigate();
+  const dispatch: Dispatch<any> = useDispatch();
 
-export default function LoginPage() {
-
-  const [fields,setFields] = useState({
+  // redux state
+  const auth = useSelector((state: any) => state.auth);
+  
+  const [fields, setFields] = useState({
     name: '',
-    email:'',
+    email: '',
     password: ''
-  }) 
-
-  const [error,setError] = useState('')
-
-  const navigate = useNavigate()
-  const dispatch= useAppDispatch()
-  const {user, isLoading , isError, message} = useAppSelector((state) => state.auth)
+  });
   
-
-  const onChange =  (event:any) =>{
-    setFields({...fields, [event.target.name] : event.target.value});
-  }
-
+    // submit form function
+  const handleRegister = async (values: any) =>
+  {
   
-
-  useEffect(() =>  {
-    if(isError) {
-      setError(message)
+    const user: User = {
+      name: values.name as string,
+      email: values.email as string,
+      password: values.password as string
     }
 
-    if(user) {
-      navigate('/')
-      window.location.reload();
+      dispatch(register(user));
+      
+    };
+    
+  useEffect(() =>
+  {
+    if (auth.isAuthenticated)
+    {
+      navigate('/');
     }
-    dispatch(reset())
-  },[user, isError,  message, navigate, dispatch])
-
-  const handleRegister = async (e :any) => {
-    e.preventDefault();
-
-    const user : User = {
-      name: fields.name as string,
-      email: fields.email as string,
-      password: fields.password as string
-    }
-
-    dispatch(register(user))
-  };
-
-  const onFinish = async (values:any) => {
-    console.log(values)
-    dispatch(register(values))
-  }
-
-  const onFinishFailed = async (values:any) => {
-
-  }
-
-
+    
+  }, [auth]);
+  
   return (
     <>
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-      className={styles.form}
-    >
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: 'Please input your name!' }]}
-        className={styles.formGroup}
+      <Form
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={handleRegister}
+        autoComplete="off"
+        className={styles.form}
+        layout="vertical"
       >
-        <Input />
-      </Form.Item>
+        <h3 className={styles.title}>Register</h3>
+          
+        {/* Name */}
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Please input your name!' }]}
+        >
+          <Input />
+        </Form.Item>
 
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: 'Please input your email!' }]}
-        className={styles.formGroup}
-      >
-        <Input />
-      </Form.Item>
+        {/* Email */}
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Please input your email!' }]}
+        >
+          <Input />
+        </Form.Item>
 
+        {/* Password */}
       <Form.Item
         label="Password"
         name="password"
         rules={[{ required: true, message: 'Please input your password!' }]}
-        className={styles.formGroup}
       >
         <Input.Password />
       </Form.Item>
