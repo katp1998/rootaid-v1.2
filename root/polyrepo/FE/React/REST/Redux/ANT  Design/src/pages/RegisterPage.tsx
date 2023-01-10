@@ -1,143 +1,108 @@
-import {useState,useEffect} from 'react'
+import {
+    useState,
+    useEffect
+  } from 'react'
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { User } from '../types/user.type';
-import { register , reset } from '../features/authSlice/auth.slice';
+import styles from '../styles/Home.module.css';
+import { Dispatch } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../features/auth/authSlice';
+import {
+    Button,
+    Form,
+    Input
+} from 'antd';
 
-import { Button, Checkbox, Form, Input } from 'antd';
-import styles from '../styles/Home.module.css'
+  
+export default function RegisterPage()
+{  
+  const navigate = useNavigate();
+  const dispatch: Dispatch<any> = useDispatch();
 
-export default function LoginPage() {
-
-  const [fields,setFields] = useState({
+  // redux state
+  const auth = useSelector((state: any) => state.auth);
+  
+  const [fields, setFields] = useState({
     name: '',
-    email:'',
+    email: '',
     password: ''
-  }) 
-
-  const [error,setError] = useState('')
-
-  const navigate = useNavigate()
-  const dispatch= useAppDispatch()
-  const {user, isLoading , isError, message} = useAppSelector((state) => state.auth)
+  });
   
-
-  const onChange =  (event:any) =>{
-    setFields({...fields, [event.target.name] : event.target.value});
-  }
-
+    // submit form function
+  const handleRegister = async (values: any) =>
+  {
   
-
-  useEffect(() =>  {
-    if(isError) {
-      setError(message)
+    const user: User = {
+      name: values.name as string,
+      email: values.email as string,
+      password: values.password as string
     }
 
-    if(user) {
-      navigate('/')
-      window.location.reload();
+      dispatch(register(user));
+      
+    };
+    
+  useEffect(() =>
+  {
+    if (auth.isAuthenticated)
+    {
+      navigate('/');
     }
-    dispatch(reset())
-  },[user, isError,  message, navigate, dispatch])
-
-  const handleRegister = async (e :any) => {
-    e.preventDefault();
-
-    const user : User = {
-      name: fields.name as string,
-      email: fields.email as string,
-      password: fields.password as string
-    }
-
-    dispatch(register(user))
-  };
-
-  const onFinish = async (values:any) => {
-    console.log(values)
-    dispatch(register(values))
-  }
-
-  const onFinishFailed = async (values:any) => {
-
-  }
-
-
+    
+  }, [auth]);
+  
   return (
     <>
-    <Form
-      name="basic"
-      labelCol={{ span: 8 }}
-      wrapperCol={{ span: 16 }}
-      initialValues={{ remember: true }}
-      onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
-      autoComplete="off"
-      className={styles.form}
-    >
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: 'Please input your name!' }]}
-        className={styles.formGroup}
+      <Form
+        name="basic"
+        initialValues={{ remember: true }}
+        onFinish={handleRegister}
+        autoComplete="off"
+        className={styles.form}
+        layout="vertical"
       >
-        <Input />
-      </Form.Item>
+        <h3 className={styles.title}>Register</h3>
+          
+        {/* Name */}
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Please input your name!' }]}
+        >
+          <Input />
+        </Form.Item>
 
-      <Form.Item
-        label="Email"
-        name="email"
-        rules={[{ required: true, message: 'Please input your email!' }]}
-        className={styles.formGroup}
-      >
-        <Input />
-      </Form.Item>
+        {/* Email */}
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Please input your email!' }]}
+        >
+          <Input />
+        </Form.Item>
 
+        {/* Password */}
       <Form.Item
         label="Password"
         name="password"
         rules={[{ required: true, message: 'Please input your password!' }]}
-        className={styles.formGroup}
       >
         <Input.Password />
       </Form.Item>
 
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className={styles.submitBtn}>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-      <Form.Item>
-        {error}
-      </Form.Item>
-    </Form>
-    {/* <div>
-      <form onSubmit={handleRegister}>
-        <Box 
-        display = "flex" 
-        flexDirection={"column"} 
-        maxWidth = {400} 
-        alignItems="center" 
-        justifyContent={"center"} 
-        margin="auto" 
-        marginTop={5} 
-        padding={'50px'} 
-        borderRadius={5} 
-        boxShadow={'5px 5px 10px #ccc'}
-        sx={{":hover":{
-          boxShadow:'10px 10px 20px #ccc'
-        }}}>
-          <Typography 
-          variant='h3'
-          padding= {3}
-          textAlign = "center">REGISTER</Typography>
-          <TextField type='text' name="name" value={fields.name}  onChange={onChange} required label="Name" variant="outlined" multiline placeholder='Enter your name' margin='normal' fullWidth color='error' />
-          <TextField type='email' name="email" value={fields.email}  onChange={onChange} required label="Email" variant="outlined" multiline placeholder='Enter email address' margin='normal' fullWidth color='error' />
-          <TextField type="password" name="password" value={fields.password}  onChange={onChange} required label="Password" variant="outlined" multiline placeholder='Enter password' margin="normal" fullWidth color='error' id="outlined-password-input" />
-          <Button sx={{marginTop: 3}} variant ="contained"  type="submit" color="error" size="large" fullWidth>Register</Button> 
-          <h1>{error}</h1>
-        </Box>
-        </form>
-    </div> */}
-    </>
-  )
-}
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }} className={styles.submitBtn}>
+          <Button className={styles.btn} htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+    
+        {auth.errMessage &&
+          <Form.Item className={styles.error}>
+          {auth.errMessage}!
+          </Form.Item>}
+    
+      </Form>
+  </> 
+  )}
+  

@@ -3,15 +3,15 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { isUserLogin, logout } from '../Redux/Actions/authActions';
 import { Dispatch } from 'redux';
+import { logout } from '../features/auth/authSlice';
 
 export default function NavBar()
 {
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
 
-  const auth = useSelector((state: any) => state.authUser);
+  const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
 
   const logOut = () => {
     dispatch(logout());
@@ -26,7 +26,7 @@ export default function NavBar()
           <Nav className="me-auto">
             <Nav.Link href="/" style={{ color: "#ffffff" }}>Home</Nav.Link>
             
-            {auth.isAuthenticated && auth.isAuthenticated ? (
+            {isAuthenticated && isAuthenticated ? (
               <Nav.Link href="/login" onClick={logOut} style={{ color: "#ffffff" }}>Logout</Nav.Link>
             ) : (
                 <>

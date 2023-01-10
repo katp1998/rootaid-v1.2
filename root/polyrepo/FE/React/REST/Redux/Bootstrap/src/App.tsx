@@ -1,4 +1,4 @@
-import NavBar from './components/NavBar';
+import NavBar from './components/Navbar';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -8,7 +8,7 @@ import './App.css';
 function App() {
   return (
     <>
-      <NavBar />
+          <NavBar />
       <main>
         <Routes>
           <Route path='/' element={<HomePage />}></Route>

@@ -9,7 +9,7 @@ import Form from 'react-bootstrap/Form';
 import styles from '../styles/Home.module.css';
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch } from 'redux';
-import { login } from '../Redux/Actions/authActions';
+import { login } from '../features/auth/authSlice';
 
   
 export default function Login()
@@ -20,7 +20,7 @@ export default function Login()
   const [error, setError] = useState('');
 
   // redux state
-  const auth = useSelector((state: any) => state.authUser);
+  const auth = useSelector((state: any) => state.auth);
   
   const [fields, setFields] = useState<User>({
     email: '',
@@ -35,7 +35,7 @@ export default function Login()
     // Submit form
   const handleLogin = async (e: any) => {
     e.preventDefault();
-
+    setError('');
     const user: User =
     {
       email: fields.email as string,
