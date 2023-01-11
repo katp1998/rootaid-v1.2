@@ -1,14 +1,17 @@
-import { useSelector, useDispatch } from 'react-redux' 
-import { RootState } from '../store/store'; 
-import { logout } from '../store/slices/authSlice';
+// import { useSelector, useDispatch } from 'react-redux'
+import { useAppSelector, useAppDispatch } from '../hooks/hooks' 
+import { RootState } from '../features/store'; 
+import { logout } from '../features/auth/authSlice';
 import {Box, Typography, AppBar,Toolbar} from '@mui/material/';
 import  Link from 'next/link';
 import authService from '../pages/api/authService'
 
 export default function NavBar() {
 
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)  
-  const dispatch = useDispatch()
+  // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)  
+  // const dispatch = useDispatch()
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+  const dispatch = useAppDispatch()  
 
   const logOut = () =>{
     authService.logout()
