@@ -1,3 +1,4 @@
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '../../pages/api/authService';
 import { AuthState } from '../../types/auth.type';
@@ -22,7 +23,7 @@ export const register = createAsyncThunk(
                 isAuthenticated: true
             }
             localStorage.setItem('auth', JSON.stringify(auth));
-            return response;
+            return accessToken;
         }
         catch (error: any)
         {
@@ -46,7 +47,7 @@ export const login = createAsyncThunk(
             }
             localStorage.setItem('auth', JSON.stringify(auth));
 
-            return response;
+            return accessToken;
         }
         catch (error: any)
         {
@@ -103,14 +104,14 @@ export const authSlice = createSlice({
     extraReducers: (builder) =>
     {
         builder.addCase(register.fulfilled, (state, action) => {
-            state.accessToken = action.payload.accessToken;
+            state.accessToken = action.payload;
             state.isAuthenticated = true;
         });
         builder.addCase(register.rejected, (state, action) => {
             state.errMessage = action.payload as string
         });
         builder.addCase(login.fulfilled, (state,action) => {
-            state.accessToken = action.payload.accessToken;
+            state.accessToken = action.payload;
             state.isAuthenticated = true;
         })
         builder.addCase(login.rejected, (state, action) => {

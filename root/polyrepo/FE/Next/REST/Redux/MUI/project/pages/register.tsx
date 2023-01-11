@@ -2,14 +2,11 @@ import {
     useState,
     useEffect
   } from 'react'
-// import { useSelector, useDispatch } from 'react-redux'
 import { useAppSelector, useAppDispatch } from '../hooks/hooks'   
 import { useRouter } from 'next/router'
 import { User } from '../types/user.type';
 
-import authService from '../pages/api/authService'
 import { register } from '../features/auth/authSlice';
-import { RootState } from '../features/store';
 
 import styles from '../styles/Home.module.css'
 import {Box, Typography, TextField, Button} from '@mui/material/';
@@ -19,8 +16,6 @@ import Spinner from '../components/Spinner/Spinner'
 const registerPage = () => {
 
     const router = useRouter()
-    // const dispatch = useDispatch()
-    // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)
     const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
     const dispatch = useAppDispatch()
 
