@@ -1,5 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux' 
-import { RootState } from '../features/store'; 
+import { useAppSelector, useAppDispatch } from '../hooks/hooks'
 import { logout } from '../features/auth/authSlice';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -8,8 +7,8 @@ import authService from '../pages/api/authService'
 
 export default function NavBar() {
 
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)  
-  const dispatch = useDispatch()
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+  const dispatch = useAppDispatch()  
 
   const logOut = () =>{
     authService.logout()

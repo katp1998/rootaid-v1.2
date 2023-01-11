@@ -2,13 +2,11 @@ import {
     useState,
     useEffect
   } from 'react'
-import { useSelector, useDispatch } from 'react-redux'  
+import { useAppSelector, useAppDispatch } from '../hooks/hooks'  
 import { useRouter } from 'next/router'
 import { User } from '../types/user.type';
 
-import authService from '../pages/api/authService'
-import { setAuth } from '../features/auth/authSlice';
-import { RootState } from '../features/store';
+import { register } from '../features/auth/authSlice';
 
 import styles from '../styles/Home.module.css'
 import Button from 'react-bootstrap/Button';
@@ -16,11 +14,12 @@ import Form from 'react-bootstrap/Form';
 import Spinner from '../components/Spinner/Spinner'
 
 
-const register = () => {
+const registerPage = () => {
 
     const router = useRouter()
-    const dispatch = useDispatch()
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)
+
+    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+    const dispatch = useAppDispatch()
 
     const [fields,setFields] = useState({
       name: '',
@@ -63,12 +62,9 @@ const register = () => {
 
       try
       {
-        // get response from register endpoint
-        const response = await authService.register(user);
   
-        // set value on zustand state
-        const accessToken = response?.data?.accessToken;
-        dispatch(setAuth(accessToken));
+        // set value on redux state
+        dispatch(register(user));
             
       } catch (error: any)
       {
@@ -116,4 +112,4 @@ const register = () => {
     </>
   )
 }
-export default register
+export default registerPage
