@@ -16,8 +16,7 @@ export default function Login()
 {  
   const navigate = useNavigate();
   const dispatch: Dispatch<any> = useDispatch();
-  
-  const [error, setError] = useState('');
+
 
   // redux state
   const auth = useSelector((state: any) => state.auth);
@@ -35,23 +34,13 @@ export default function Login()
     // Submit form
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    setError('');
+
     const user: User =
     {
       email: fields.email as string,
       password: fields.password as string
     }
     
-     // validate that all form inputs have been filled
-    for (const [key, value] of Object.entries(user))
-    {
-      if (value === '')
-      {
-        setError(`Please fill in the \"${key}\" field`);
-
-        return undefined
-      }
-    }
     dispatch(login(user));
 
   };
@@ -73,13 +62,13 @@ export default function Login()
           {/* email */}
           <Form.Group className="mb-4" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="text" placeholder="Enter email" name='email' onChange={onChange} value={fields.email} />
+            <Form.Control required type="text" placeholder="Enter email" name='email' onChange={onChange} value={fields.email} />
           </Form.Group>
 
           {/* password */}
           <Form.Group className="mb-4" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter password" onChange={onChange} name='password' value={fields.password} />
+            <Form.Control required type="password" placeholder="Enter password" onChange={onChange} name='password' value={fields.password} />
           </Form.Group>
               
           {/* submit btn */}
@@ -89,9 +78,6 @@ export default function Login()
 
           {/* reponse error */}
           <h6 className={styles.error}>{auth.errMessage}</h6>
-
-          {/* form validation error*/}
-            <h6 className={styles.error}>{error}</h6>
 
         </Form> 
       </div>

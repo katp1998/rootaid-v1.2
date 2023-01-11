@@ -74,13 +74,13 @@ export default function Login() {
           {/* email */}
           <Form.Group className="mb-4" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="text" placeholder="Enter email" name='email' onChange={onChange} value={fields.email} />
+            <Form.Control required type="text" placeholder="Enter email" name='email' onChange={onChange} value={fields.email} />
           </Form.Group>
 
           {/* password */}
           <Form.Group className="mb-4" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter password" onChange={onChange} name='password' value={fields.password} />
+            <Form.Control required type="password" placeholder="Enter password" onChange={onChange} name='password' value={fields.password} />
           </Form.Group>
           
           {/* submit btn */}
