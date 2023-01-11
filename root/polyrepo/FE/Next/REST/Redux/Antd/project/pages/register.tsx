@@ -2,24 +2,22 @@ import {
     useState,
     useEffect
   } from 'react'
-import { useSelector, useDispatch } from 'react-redux'  
+import { useAppSelector, useAppDispatch } from '../hooks/hooks'  
 import { useRouter } from 'next/router'
 import { User } from '../types/user.type';
 
-import authService from '../pages/api/authService'
-import { setAuth } from '../store/slices/authSlice';
-import { RootState } from '../store/store';
+import { register } from '../features/auth/authSlice';
 
 import styles from '../styles/Home.module.css'
 import { Button, Form, Input } from 'antd';
 import Spinner from '../components/Spinner/Spinner'
 
 
-const register = () => {
+const registerPage = () => {
 
     const router = useRouter()
-    const dispatch = useDispatch()
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)
+    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+    const dispatch = useAppDispatch()
 
     const [fields,setFields] = useState({
       name: '',
@@ -38,38 +36,23 @@ const register = () => {
       setError('')
     }
   
-  
     // submit form function
     const handleRegister = async (values :any) => {
-      // e.preventDefault();
       console.log(values)
       setError('');
       setLoading(true);
+      const {name, email, password} = values
   
       const user : User = {
-        name: fields.name as string,
-        email: fields.email as string,
-        password: fields.password as string
+        name: name as string,
+        email: email as string,
+        password: password as string
       }
-
-      // validate that all form inputs have been filled
-      // for (const [key, value] of Object.entries(user)) {
-      //   if(value === '') {
-      //     setError(`Please fill in the \"${key}\" field`)
-      //     setLoading(false)
-      //     return undefined
-      //   }
-      // }
 
       try
       {
-        // get response from register endpoint
-        const response = await authService.register(user);
-  
-        // set value on zustand state
-        const accessToken = response?.data?.accessToken;
-        dispatch(setAuth(accessToken));
-            
+        // set value on redux state
+        dispatch(register(user));        
       } catch (error: any)
       {
         const message = error.response && error.response.data.error ? error.response.data.error : 'Something went wrong';
@@ -137,4 +120,4 @@ const register = () => {
     </>
   )
 }
-export default register
+export default registerPage

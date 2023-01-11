@@ -2,13 +2,11 @@ import {
     useState,
     useEffect
   } from 'react';
-import { useSelector, useDispatch } from 'react-redux'  
+import { useAppSelector, useAppDispatch } from '../hooks/hooks' 
 import { useRouter } from 'next/router'
 import { User } from '../types/user.type';
 
-import authService from '../pages/api/authService'
-import { setAuth } from '../store/slices/authSlice';
-import { RootState } from '../store/store';
+import { login } from '../features/auth/authSlice';
 
 import styles from '../styles/Home.module.css'
 import { Button, Form, Input } from 'antd';
@@ -16,11 +14,11 @@ import Spinner from '../components/Spinner/Spinner';
 
 
 
-const login = () => {
+const loginForm = () => {
 
     const router = useRouter()
-    const dispatch = useDispatch()
-    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)
+    const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+    const dispatch = useAppDispatch()
   
     const [fields, setFields] = useState<User>({
       email: '',
@@ -38,34 +36,20 @@ const login = () => {
   
     // Submit form
     const handleLogin = async (values: any) => {
-      // e.preventDefault();
       console.log(values);
+      const {email, password} = values
       setError('');
       setLoading(true);
       
       const user: User = {
-        email: fields.email as string,
-        password: fields.password as string
-      }
-
-      // validate that all form inputs have been filled
-      // for (const [key, value] of Object.entries(user)) {
-      //   if(value === '') {
-      //     setError(`Please fill in the \"${key}\" field`)
-      //     setLoading(false)
-      //     return undefined
-      //   }
-      // }      
+        email: email as string,
+        password: password as string
+      }     
 
       try
       {
-        // get response from login end point 
-        const response = await authService.login(user);
-        console.log(response);
-  
-        // set value on zustand state
-        const accessToken = response?.data?.accessToken;
-        dispatch(setAuth(accessToken));
+        // set value on redux state
+        dispatch(login(user));
       }
       catch (error: any)
       {
@@ -127,4 +111,4 @@ const login = () => {
     </>
   )
 }
-export default login
+export default loginForm

@@ -1,46 +1,39 @@
-// import { useSelector, useDispatch } from 'react-redux' 
-// import { RootState } from '../store/store'; 
-// import { logout } from '../store/slices/authSlice';
-// import Container from 'react-bootstrap/Container';
-// import Nav from 'react-bootstrap/Nav';
-// import Navbar from 'react-bootstrap/Navbar';
-// import authService from '../pages/api/authService'
+import { useAppSelector, useAppDispatch } from '../hooks/hooks' 
 
-// export default function NavBar() {
+import { logout } from '../features/auth/authSlice';
+import { Menu } from "antd";
+import authService from '../pages/api/authService'
 
-//   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated)  
-//   const dispatch = useDispatch()
+export default function Navbar() {
 
-//   const logOut = () =>{
-//     authService.logout()
-//     dispatch(logout())
-//   }
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+  const dispatch = useAppDispatch()
 
-//   return (
-//     <Navbar bg="light" expand="lg" className='mb-4'>
-//       <Container>
-//         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-//         <Navbar.Collapse id="basic-navbar-nav">
-//           <Nav className="me-auto">
-//           <Nav.Link href="/">Home</Nav.Link>
-//           {isAuthenticated ? (
-//               <Nav.Link href="/login" onClick={logOut}>Logout</Nav.Link>
-//           ):(
-//           <>
-//             <Nav.Link href="/login">Login</Nav.Link>
-//             <Nav.Link href="/register">Register</Nav.Link>
-//           </>
-//           )}
-//           </Nav>
-//         </Navbar.Collapse>
-//       </Container>
-//     </Navbar>
-//   )
-// }
+  const logOut = () =>{
+    authService.logout()
+    dispatch(logout())
+  }
 
-const Navbar = () => {
   return (
-    <div>Navbar</div>
+      <Menu mode="horizontal" style={{marginBottom:'25px'}}>
+      <Menu.Item key="home">
+        <a href='/' style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Home</a>
+        </Menu.Item>
+        {isAuthenticated ? (
+          <Menu.Item key="logout">
+          <a href="/"  onClick={logOut} style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Logout</a>
+          </Menu.Item>
+        ):(
+          <>
+            <Menu.Item key="login">
+            <a href='/login' style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Login</a>
+            </Menu.Item>
+            <Menu.Item key="register">
+            <a href='/register' style={{textDecoration: "none", color:"black", marginRight:"10px"}}>Register</a>
+            </Menu.Item>
+          </>
+        )}
+
+      </Menu>
   )
 }
-export default Navbar
