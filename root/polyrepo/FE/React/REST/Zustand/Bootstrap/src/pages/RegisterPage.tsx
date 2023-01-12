@@ -80,19 +80,19 @@ export default function RegisterPage()
           {/* Name */}
           <Form.Group className="mb-4" controlId="username">
             <Form.Label>name</Form.Label>
-            <Form.Control type="text" placeholder="Enter name" name="name" onChange={onChange} value={fields.name} />
+            <Form.Control required type="text" placeholder="Enter name" name="name" onChange={onChange} value={fields.name} />
           </Form.Group>
 
           {/* Email */}
           <Form.Group className="mb-4" controlId="email">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" name="email" onChange={onChange} value={fields.email} />
+            <Form.Control required type="email" placeholder="Enter email" name="email" onChange={onChange} value={fields.email} />
           </Form.Group>
 
           {/* Password */}
           <Form.Group className="mb-4" controlId="password">
             <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Enter password" name="password" onChange={onChange} value={fields.password} />
+            <Form.Control required type="password" placeholder="Enter password" name="password" onChange={onChange} value={fields.password} />
           </Form.Group>
 
           <Button  type="submit" className={styles.btn} style={{backgroundColor:'#ff3841',border:" none"}}>
